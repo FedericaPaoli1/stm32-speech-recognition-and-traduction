@@ -1,0 +1,4 @@
+arm_boolean_distance_template.h:442:6:arm_boolean_distance_TT_TF_FT	56	static
+arm_boolean_distance_template.h:442:6:arm_boolean_distance_TF_FT	56	static
+arm_boolean_distance_template.h:442:6:arm_boolean_distance_TT_FF_TF_FT	64	static
+arm_boolean_distance_template.h:442:6:arm_boolean_distance_TT	48	static

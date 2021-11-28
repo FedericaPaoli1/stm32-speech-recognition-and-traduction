@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    small_words_model.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Mon Nov 15 17:10:39 2021
+  * @date    Sun Nov 28 12:31:47 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -43,7 +43,7 @@
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "Mon Nov 15 17:10:39 2021"
+#define AI_TOOLS_DATE_TIME   "Sun Nov 28 12:31:47 2021"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__

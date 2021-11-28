@@ -1,13 +1,13 @@
 Neural Network Tools for STM32AI v1.5.1 (STM.ai v7.0.0-RC8)
-Created date          : 2021-11-15 17:10:39
-Parameters            : generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/8-words-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace2717870860170411824781749877345969 --output /home/federica/.stm32cubemx
+Created date          : 2021-11-28 12:31:47
+Parameters            : generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/8-words-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace899862765051310212159914681411272 --output /home/federica/.stm32cubemx
 
 Exec/report summary (generate)
 ------------------------------------------------------------------------------------------------------------------------
 model file            : /home/federica/Scrivania/Uni/PROS/8-words-model.tflite
 type                  : tflite
 c_name                : small_words_model
-workspace dir         : /tmp/mxAI_workspace2717870860170411824781749877345969
+workspace dir         : /tmp/mxAI_workspace899862765051310212159914681411272
 output dir            : /home/federica/.stm32cubemx
 
 model_name            : wordsmodel

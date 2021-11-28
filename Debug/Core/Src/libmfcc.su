@@ -1,0 +1,5 @@
+libmfcc.c:22:8:GetCoefficient	72	static
+libmfcc.c:67:8:NormalizationFactor	24	static
+libmfcc.c:87:8:GetFilterParameter	72	static
+libmfcc.c:122:8:GetMagnitudeFactor	32	static
+libmfcc.c:144:8:GetCenterFrequency	32	static

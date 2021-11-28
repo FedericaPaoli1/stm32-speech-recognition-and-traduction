@@ -30,7 +30,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../PDM2PCM/App/pdm2pcm.h \
  ../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h \
- ../Core/Inc/mic_handler.h
+ ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
+ ../Middlewares/ST/AI/Inc/ai_platform.h \
+ ../X-CUBE-AI/App/small_words_model.h \
+ ../X-CUBE-AI/App/small_words_model_config.h \
+ ../X-CUBE-AI/App/small_words_model_data.h ../Core/Inc/fft.h \
+ ../Core/Inc/config.h ../Core/Inc/intrinsics.h ../Core/Inc/fpmath.h \
+ ../Core/Inc/libmfcc.h
 
 ../Core/Inc/main.h:
 
@@ -96,4 +102,22 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h:
 
-../Core/Inc/mic_handler.h:
+../Middlewares/ST/AI/Inc/ai_datatypes_defines.h:
+
+../Middlewares/ST/AI/Inc/ai_platform.h:
+
+../X-CUBE-AI/App/small_words_model.h:
+
+../X-CUBE-AI/App/small_words_model_config.h:
+
+../X-CUBE-AI/App/small_words_model_data.h:
+
+../Core/Inc/fft.h:
+
+../Core/Inc/config.h:
+
+../Core/Inc/intrinsics.h:
+
+../Core/Inc/fpmath.h:
+
+../Core/Inc/libmfcc.h:

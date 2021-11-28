@@ -9,6 +9,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include X-CUBE-AI/App/subdir.mk
 -include PDM2PCM/App/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
@@ -38,8 +39,8 @@ $(wildcard ../makefile.targets) \
 
 BUILD_ARTIFACT_NAME := stm32-speech-recognition-and-traduction
 BUILD_ARTIFACT_EXTENSION := elf
-BUILD_ARTIFACT_PREFIX := 
-BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
+BUILD_ARTIFACT_PREFIX :=
+BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
@@ -63,7 +64,7 @@ main-build: stm32-speech-recognition-and-traduction.elf secondary-outputs
 
 # Tool invocations
 stm32-speech-recognition-and-traduction.elf: $(OBJS) $(USER_OBJS) /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "stm32-speech-recognition-and-traduction.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-speech-recognition-and-traduction.map" -Wl,--gc-sections -static -Wl,--start-group -l:libPDMFilter_CM4_GCC_wc32.a -Wl,--end-group -L../Middlewares/ST/STM32_Audio/Addons/PDM/Lib --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "stm32-speech-recognition-and-traduction.elf" @"objects.list" $(USER_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group -mcpu=cortex-m4 -T"/home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-speech-recognition-and-traduction.map" -Wl,--gc-sections -static -L../Middlewares/ST/STM32_Audio/Addons/PDM/Lib -L../Middlewares/ST/AI/Lib --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -84,7 +85,7 @@ stm32-speech-recognition-and-traduction.bin: $(EXECUTABLES) makefile objects.lis
 
 # Other Targets
 clean:
-	-$(RM) *
+	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) stm32-speech-recognition-and-traduction.elf
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
@@ -97,6 +98,5 @@ warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
 .PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
-.SECONDARY:
 
 -include ../makefile.targets

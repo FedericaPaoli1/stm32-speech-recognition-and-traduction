@@ -1,8 +1,6 @@
-mic_handler.c:41:6:mic_init	16	static
-mic_handler.c:46:5:mic_start_recording	16	static
-mic_handler.c:66:6:mic_stop_recording	8	static
-mic_handler.c:73:5:mic_monitor	8	static
-mic_handler.c:81:12:convert_audio_to_pcm	16	static
-mic_handler.c:98:10:get_pcm	4	static
-mic_handler.c:102:6:HAL_I2S_RxHalfCpltCallback	16	static
-mic_handler.c:110:6:HAL_I2S_RxCpltCallback	16	static
+mic_handler.c:35:6:mic_init	16	static
+mic_handler.c:40:5:mic_start_recording	16	static
+mic_handler.c:57:6:mic_stop_recording	8	static
+mic_handler.c:61:5:mic_monitor	8	static
+mic_handler.c:69:12:convert_audio_to_pcm	16	static
+mic_handler.c:78:10:get_pcm	4	static

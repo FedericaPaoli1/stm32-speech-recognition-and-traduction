@@ -1,0 +1,3 @@
+arm_merge_sort_f32.c:33:13:topDownMerge	40	static
+arm_merge_sort_f32.c:61:13:arm_merge_sort_core_f32	40	static
+arm_merge_sort_f32.c:103:6:arm_merge_sort_f32	40	static

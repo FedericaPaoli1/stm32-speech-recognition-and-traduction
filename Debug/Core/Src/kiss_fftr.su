@@ -1,0 +1,3 @@
+kiss_fftr.c:21:15:kiss_fftr_alloc	56	static
+kiss_fftr.c:63:6:kiss_fftr	80	static
+kiss_fftr.c:119:6:kiss_fftri	72	static

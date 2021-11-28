@@ -1,0 +1,10 @@
+small_words_model.c:454:9:small_words_model_configure_activations	24	static
+small_words_model.c:493:9:small_words_model_configure_weights	24	static
+small_words_model.c:543:9:ai_small_words_model_get_info	136	static
+small_words_model.c:588:9:ai_small_words_model_get_report	136	static
+small_words_model.c:634:10:ai_small_words_model_get_error	16	static
+small_words_model.c:640:10:ai_small_words_model_create	24	static
+small_words_model.c:650:11:ai_small_words_model_destroy	16	static
+small_words_model.c:656:9:ai_small_words_model_init	24	static
+small_words_model.c:673:8:ai_small_words_model_run	24	static
+small_words_model.c:680:8:ai_small_words_model_forward	16	static

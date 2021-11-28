@@ -1,0 +1,2 @@
+arm_bitonic_sort_f32.c:35:13:arm_bitonic_sort_core_f32	48	static
+arm_bitonic_sort_f32.c:912:6:arm_bitonic_sort_f32	40	static

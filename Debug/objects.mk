@@ -5,5 +5,5 @@
 
 USER_OBJS :=
 
-LIBS := -l:libPDMFilter_CM4_GCC_wc32.a
+LIBS := -l:libPDMFilter_CM4_GCC_wc32.a -l:NetworkRuntime700_CM4_GCC.a
 
