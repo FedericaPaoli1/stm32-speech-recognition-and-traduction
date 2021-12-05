@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/8-words-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace899862765051310212159914681411272 --output /home/federica/.stm32cubemx",
+    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/8-words-model-new.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace2624521090640112645575722232618651 --output /home/federica/.stm32cubemx",
     "cli_version": {
         "major": 1,
         "micro": 1,
@@ -12,14 +12,14 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Sun Nov 28 12:31:47 2021",
+    "date_time": "Sat Dec  4 17:22:46 2021",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
     "exec_duration": 0.0,
-    "hash": "25153ebe7a715316fc4324a473d6e5f7",
+    "hash": "a08d4415efe3fa8601d173d0b2a9febb",
     "inputs": [
-        "serving_default_conv2d_10_input0"
+        "serving_default_conv2d_input0"
     ],
     "layers": [
         {
@@ -43,7 +43,7 @@
             },
             "id": 0,
             "inputs": [],
-            "name": "serving_default_conv2d_10_input0",
+            "name": "serving_default_conv2d_input0",
             "type": "Input"
         },
         {
@@ -67,7 +67,7 @@
             },
             "id": 0,
             "inputs": [
-                "serving_default_conv2d_10_input0"
+                "serving_default_conv2d_input0"
             ],
             "name": "conv2d_0",
             "type": "Conv2D"
@@ -302,10 +302,10 @@
         }
     ],
     "model_files": [
-        "/home/federica/Scrivania/Uni/PROS/8-words-model.tflite"
+        "/home/federica/Scrivania/Uni/PROS/8-words-model-new.tflite"
     ],
     "model_n_params": 25416,
-    "model_name": "wordsmodel",
+    "model_name": "wordsmodelnew",
     "model_size": 27936,
     "model_type": "tflite",
     "name": "small_words_model",
@@ -327,7 +327,7 @@
         {
             "c_size": 2048,
             "c_type": "float",
-            "name": "serving_default_conv2d_10_input0"
+            "name": "serving_default_conv2d_input0"
         }
     ],
     "rom_n_macc": 550184,

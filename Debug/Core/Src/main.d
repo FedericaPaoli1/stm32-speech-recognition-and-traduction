@@ -34,9 +34,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/AI/Inc/ai_platform.h \
  ../X-CUBE-AI/App/small_words_model.h \
  ../X-CUBE-AI/App/small_words_model_config.h \
- ../X-CUBE-AI/App/small_words_model_data.h ../Core/Inc/fft.h \
- ../Core/Inc/config.h ../Core/Inc/intrinsics.h ../Core/Inc/fpmath.h \
- ../Core/Inc/libmfcc.h
+ ../X-CUBE-AI/App/small_words_model_data.h ../Core/Inc/commands.h \
+ ../Core/Inc/fft.h ../Core/Inc/config.h ../Core/Inc/intrinsics.h \
+ ../Core/Inc/fpmath.h ../Core/Inc/libmfcc.h
 
 ../Core/Inc/main.h:
 
@@ -111,6 +111,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../X-CUBE-AI/App/small_words_model_config.h:
 
 ../X-CUBE-AI/App/small_words_model_data.h:
+
+../Core/Inc/commands.h:
 
 ../Core/Inc/fft.h:
 

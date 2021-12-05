@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    small_words_model.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sun Nov 28 12:31:47 2021
+  * @date    Sat Dec  4 17:22:46 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -36,14 +36,14 @@
 #define AI_NET_OBJ_INSTANCE g_small_words_model
  
 #undef AI_SMALL_WORDS_MODEL_MODEL_SIGNATURE
-#define AI_SMALL_WORDS_MODEL_MODEL_SIGNATURE     "25153ebe7a715316fc4324a473d6e5f7"
+#define AI_SMALL_WORDS_MODEL_MODEL_SIGNATURE     "a08d4415efe3fa8601d173d0b2a9febb"
 
 #ifndef AI_TOOLS_REVISION_ID
 #define AI_TOOLS_REVISION_ID     ""
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "Sun Nov 28 12:31:47 2021"
+#define AI_TOOLS_DATE_TIME   "Sat Dec  4 17:22:46 2021"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__
@@ -57,7 +57,7 @@
 /**  Array declarations section  **********************************************/
 /* Array#0 */
 AI_ARRAY_OBJ_DECLARE(
-  serving_default_conv2d_10_input0_output_array, AI_ARRAY_FORMAT_FLOAT|AI_FMT_FLAG_IS_IO,
+  serving_default_conv2d_input0_output_array, AI_ARRAY_FORMAT_FLOAT|AI_FMT_FLAG_IS_IO,
   NULL, NULL, 512, AI_STATIC)
 
 /* Array#1 */
@@ -158,10 +158,10 @@ AI_ARRAY_OBJ_DECLARE(
 /**  Tensor declarations section  *********************************************/
 /* Tensor #0 */
 AI_TENSOR_OBJ_DECLARE(
-  serving_default_conv2d_10_input0_output, AI_STATIC,
+  serving_default_conv2d_input0_output, AI_STATIC,
   0, 0x0,
   AI_SHAPE_INIT(4, 1, 1, 32, 16), AI_STRIDE_INIT(4, 4, 4, 4, 128),
-  1, &serving_default_conv2d_10_input0_output_array, NULL)
+  1, &serving_default_conv2d_input0_output_array, NULL)
 
 /* Tensor #1 */
 AI_TENSOR_OBJ_DECLARE(
@@ -411,7 +411,7 @@ AI_LAYER_OBJ_DECLARE(
 
 AI_TENSOR_CHAIN_OBJ_DECLARE(
   conv2d_0_chain, AI_STATIC_CONST, 4,
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &serving_default_conv2d_10_input0_output),
+  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &serving_default_conv2d_input0_output),
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_0_output),
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 3, &conv2d_0_weights, &conv2d_0_bias, NULL),
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_0_scratch0)
@@ -444,7 +444,7 @@ AI_NETWORK_OBJ_DECLARE(
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_U8,
                      1, 1, 21376, 1,
                      NULL),
-  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_SMALL_WORDS_MODEL_IN_NUM, &serving_default_conv2d_10_input0_output),
+  AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_SMALL_WORDS_MODEL_IN_NUM, &serving_default_conv2d_input0_output),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_SMALL_WORDS_MODEL_OUT_NUM, &dense_8_output),
   &conv2d_0_layer, 0, NULL)
 
@@ -461,8 +461,8 @@ ai_bool small_words_model_configure_activations(
 
   if (ai_platform_get_activations_map(activations_map, 1, params)) {
     /* Updating activations (byte) offsets */
-    serving_default_conv2d_10_input0_output_array.data = AI_PTR(NULL);
-    serving_default_conv2d_10_input0_output_array.data_start = AI_PTR(NULL);
+    serving_default_conv2d_input0_output_array.data = AI_PTR(NULL);
+    serving_default_conv2d_input0_output_array.data_start = AI_PTR(NULL);
     conv2d_0_output_array.data = AI_PTR(activations_map[0] + 7936);
     conv2d_0_output_array.data_start = AI_PTR(activations_map[0] + 7936);
     conv2d_2_output_array.data = AI_PTR(activations_map[0] + 3584);

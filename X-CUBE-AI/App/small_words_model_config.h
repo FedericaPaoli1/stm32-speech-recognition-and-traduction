@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    small_words_model_config.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sun Nov 28 12:31:47 2021
+  * @date    Sat Dec  4 17:22:46 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention

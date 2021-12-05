@@ -11,13 +11,13 @@
             "format": "float",
             "io_type": "input",
             "mem_pool": "user",
-            "name": "serving_default_conv2d_10_input0_output_array",
+            "name": "serving_default_conv2d_input0_output_array",
             "offset": "NULL",
             "size": 512,
             "start_offset": "NULL",
             "tensors": [
                 {
-                    "name": "serving_default_conv2d_10_input0_output",
+                    "name": "serving_default_conv2d_input0_output",
                     "shape": [
                         1,
                         16,
@@ -508,7 +508,7 @@
             "rom": 640,
             "tensors": {
                 "inputs": [
-                    "serving_default_conv2d_10_input0_output"
+                    "serving_default_conv2d_input0_output"
                 ],
                 "outputs": [
                     "conv2d_0_output"
@@ -645,9 +645,9 @@
     "c_weights_count": 1,
     "c_weights_header": 0,
     "data_alignment": 4,
-    "date_time": "Sun Nov 28 12:31:47 2021",
+    "date_time": "Sat Dec  4 17:22:46 2021",
     "inputs": [
-        "serving_default_conv2d_10_input0_output"
+        "serving_default_conv2d_input0_output"
     ],
     "macc": 550184,
     "memory_footprint": {
@@ -659,7 +659,7 @@
         "series": "generic",
         "weights": 101664
     },
-    "model_name": "wordsmodel",
+    "model_name": "wordsmodelnew",
     "outputs": [
         "dense_8_output"
     ],

@@ -1,0 +1,2 @@
+commands.c:26:9:argmax	32	static
+commands.c:43:7:get_word	16	static

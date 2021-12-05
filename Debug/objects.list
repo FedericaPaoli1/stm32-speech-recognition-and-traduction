@@ -1,3 +1,4 @@
+"./Core/Src/commands.o"
 "./Core/Src/dsp.o"
 "./Core/Src/libmfcc.o"
 "./Core/Src/main.o"
