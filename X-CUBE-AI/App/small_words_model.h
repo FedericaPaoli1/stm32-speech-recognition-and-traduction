@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    small_words_model.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sat Dec  4 17:22:46 2021
+  * @date    Sat Dec 11 19:25:39 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -27,7 +27,7 @@
 
 /******************************************************************************/
 #define AI_SMALL_WORDS_MODEL_MODEL_NAME          "small_words_model"
-#define AI_SMALL_WORDS_MODEL_ORIGIN_MODEL_NAME   "wordsmodelnew"
+#define AI_SMALL_WORDS_MODEL_ORIGIN_MODEL_NAME   "allwords126frames2coeffsmodel"
 
 /******************************************************************************/
 #define AI_SMALL_WORDS_MODEL_ACTIVATIONS_ALIGNMENT   (4)
@@ -37,7 +37,7 @@
 /******************************************************************************/
 #define AI_SMALL_WORDS_MODEL_IN_NUM        (1)
 #define AI_SMALL_WORDS_MODEL_IN { \
-  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 16, 32, 1, 1, NULL), \
+  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 126, 2, 1, 1, NULL), \
 }
 #define AI_SMALL_WORDS_MODEL_IN_SIZE { \
   AI_SMALL_WORDS_MODEL_IN_1_SIZE, \
@@ -45,16 +45,16 @@
 #define AI_SMALL_WORDS_MODEL_IN_SIZE_BYTES { \
   AI_SMALL_WORDS_MODEL_IN_1_SIZE_BYTES, \
 }
-#define AI_SMALL_WORDS_MODEL_IN_1_HEIGHT      (16)
-#define AI_SMALL_WORDS_MODEL_IN_1_WIDTH       (32)
+#define AI_SMALL_WORDS_MODEL_IN_1_HEIGHT      (126)
+#define AI_SMALL_WORDS_MODEL_IN_1_WIDTH       (2)
 #define AI_SMALL_WORDS_MODEL_IN_1_CHANNEL     (1)
-#define AI_SMALL_WORDS_MODEL_IN_1_SIZE        (16 *  32 *  1)
+#define AI_SMALL_WORDS_MODEL_IN_1_SIZE        (126 *  2 *  1)
 #define AI_SMALL_WORDS_MODEL_IN_1_SIZE_BYTES  (AI_SMALL_WORDS_MODEL_IN_1_SIZE * 4)
 
 /******************************************************************************/
 #define AI_SMALL_WORDS_MODEL_OUT_NUM       (1)
 #define AI_SMALL_WORDS_MODEL_OUT { \
-  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 8, 1, NULL), \
+  AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_FLOAT, 1, 1, 37, 1, NULL), \
 }
 #define AI_SMALL_WORDS_MODEL_OUT_SIZE { \
   AI_SMALL_WORDS_MODEL_OUT_1_SIZE, \
@@ -62,12 +62,12 @@
 #define AI_SMALL_WORDS_MODEL_OUT_SIZE_BYTES { \
   AI_SMALL_WORDS_MODEL_OUT_1_SIZE_BYTES, \
 }
-#define AI_SMALL_WORDS_MODEL_OUT_1_CHANNEL     (8)
-#define AI_SMALL_WORDS_MODEL_OUT_1_SIZE        (8)
+#define AI_SMALL_WORDS_MODEL_OUT_1_CHANNEL     (37)
+#define AI_SMALL_WORDS_MODEL_OUT_1_SIZE        (37)
 #define AI_SMALL_WORDS_MODEL_OUT_1_SIZE_BYTES  (AI_SMALL_WORDS_MODEL_OUT_1_SIZE * 4)
 
 /******************************************************************************/
-#define AI_SMALL_WORDS_MODEL_N_NODES (6)
+#define AI_SMALL_WORDS_MODEL_N_NODES (7)
 
 
 AI_API_DECLARE_BEGIN

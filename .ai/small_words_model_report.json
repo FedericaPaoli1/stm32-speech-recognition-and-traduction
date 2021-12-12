@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/8-words-model-new.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace2624521090640112645575722232618651 --output /home/federica/.stm32cubemx",
+    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/all-words-126frames-2coeffs-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace3338932767945710691709512192570682 --output /home/federica/.stm32cubemx",
     "cli_version": {
         "major": 1,
         "micro": 1,
@@ -12,14 +12,14 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Sat Dec  4 17:22:46 2021",
+    "date_time": "Sat Dec 11 19:25:39 2021",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
     "exec_duration": 0.0,
-    "hash": "a08d4415efe3fa8601d173d0b2a9febb",
+    "hash": "5a62e33ddfe9ccf0863132230f4a11ab",
     "inputs": [
-        "serving_default_conv2d_input0"
+        "serving_default_conv2d_1_input0"
     ],
     "layers": [
         {
@@ -28,13 +28,13 @@
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 2048,
+                    "c_size": 1008,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        16,
-                        32,
+                        126,
+                        2,
                         1,
                         1
                     ]
@@ -43,38 +43,38 @@
             },
             "id": 0,
             "inputs": [],
-            "name": "serving_default_conv2d_input0",
+            "name": "serving_default_conv2d_1_input0",
             "type": "Input"
         },
         {
             "extras": {
-                "n_macc": 59552,
-                "n_params": 160,
-                "psize": 640,
+                "n_macc": 8016,
+                "n_params": 80,
+                "psize": 320,
                 "rom_output": {
-                    "c_size": 13440,
+                    "c_size": 4032,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        7,
-                        15,
-                        32,
+                        63,
+                        1,
+                        16,
                         1
                     ]
                 },
-                "rom_size": 640
+                "rom_size": 320
             },
             "id": 0,
             "inputs": [
-                "serving_default_conv2d_input0"
+                "serving_default_conv2d_1_input0"
             ],
             "name": "conv2d_0",
             "type": "Conv2D"
         },
         {
             "extras": {
-                "n_macc": 14880,
+                "n_macc": 2000,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -88,7 +88,7 @@
         },
         {
             "extras": {
-                "n_macc": 13440,
+                "n_macc": 4032,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -102,22 +102,22 @@
         },
         {
             "extras": {
-                "n_macc": 344096,
-                "n_params": 4128,
-                "psize": 4224,
+                "n_macc": 129056,
+                "n_params": 2080,
+                "psize": 2176,
                 "rom_output": {
-                    "c_size": 2688,
+                    "c_size": 4096,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        3,
-                        7,
+                        32,
+                        1,
                         32,
                         1
                     ]
                 },
-                "rom_size": 16512
+                "rom_size": 8320
             },
             "id": 2,
             "inputs": [
@@ -128,7 +128,7 @@
         },
         {
             "extras": {
-                "n_macc": 2688,
+                "n_macc": 2016,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -142,7 +142,7 @@
         },
         {
             "extras": {
-                "n_macc": 2688,
+                "n_macc": 4096,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -156,17 +156,17 @@
         },
         {
             "extras": {
-                "n_macc": 98368,
+                "n_macc": 262208,
                 "n_params": 8256,
                 "psize": 8448,
                 "rom_output": {
-                    "c_size": 768,
+                    "c_size": 4096,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
+                        16,
                         1,
-                        3,
                         64,
                         1
                     ]
@@ -182,7 +182,7 @@
         },
         {
             "extras": {
-                "n_macc": 768,
+                "n_macc": 2048,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -196,7 +196,7 @@
         },
         {
             "extras": {
-                "n_macc": 768,
+                "n_macc": 4096,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
@@ -210,135 +210,175 @@
         },
         {
             "extras": {
-                "n_macc": 0,
+                "n_macc": 524416,
+                "n_params": 32896,
+                "psize": 33280,
+                "rom_output": {
+                    "c_size": 4096,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        8,
+                        1,
+                        128,
+                        1
+                    ]
+                },
+                "rom_size": 131584
+            },
+            "id": 6,
+            "inputs": [
+                "pool_5"
+            ],
+            "name": "conv2d_6",
+            "type": "Conv2D"
+        },
+        {
+            "extras": {
+                "n_macc": 2048,
                 "n_params": 0,
                 "psize": 0,
                 "rom_size": 0
             },
             "id": 6,
             "inputs": [
-                "pool_5"
+                "conv2d_6"
             ],
-            "name": "reshape_6",
-            "type": "Reshape"
+            "name": "nl_6_nl",
+            "type": "Nonlinearity"
         },
         {
             "extras": {
-                "n_macc": 12352,
-                "n_params": 12352,
-                "psize": 12544,
-                "rom_output": {
-                    "c_size": 256,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        1,
-                        1,
-                        64,
-                        1
-                    ]
-                },
-                "rom_size": 49408
+                "n_macc": 4096,
+                "n_params": 0,
+                "psize": 0,
+                "rom_size": 0
             },
             "id": 7,
             "inputs": [
-                "reshape_6"
+                "nl_6_nl"
             ],
-            "name": "dense_7",
-            "type": "Dense"
+            "name": "pool_7",
+            "type": "Pool"
         },
         {
             "extras": {
-                "n_macc": 64,
+                "n_macc": 1024,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 256,
+                    "c_size": 512,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
                         1,
                         1,
-                        64,
+                        128,
                         1
                     ]
                 },
                 "rom_size": 0
             },
-            "id": 7,
+            "id": 8,
             "inputs": [
-                "dense_7"
+                "pool_7"
             ],
-            "name": "nl_7_nl",
-            "type": "Nonlinearity"
+            "name": "pool_8",
+            "type": "Pool"
         },
         {
             "extras": {
-                "n_macc": 520,
-                "n_params": 520,
-                "psize": 2080,
+                "n_macc": 4773,
+                "n_params": 4773,
+                "psize": 4884,
                 "rom_output": {
-                    "c_size": 32,
+                    "c_size": 148,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
                         1,
                         1,
-                        8,
+                        37,
                         1
                     ]
                 },
-                "rom_size": 2080
+                "rom_size": 19092
             },
-            "id": 8,
+            "id": 9,
             "inputs": [
-                "nl_7_nl"
+                "pool_8"
             ],
-            "name": "dense_8",
+            "name": "dense_9",
             "type": "Dense"
+        },
+        {
+            "extras": {
+                "n_macc": 555,
+                "n_params": 0,
+                "psize": 0,
+                "rom_output": {
+                    "c_size": 148,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        1,
+                        1,
+                        37,
+                        1
+                    ]
+                },
+                "rom_size": 0
+            },
+            "id": 10,
+            "inputs": [
+                "dense_9"
+            ],
+            "name": "nl_10",
+            "type": "Nonlinearity"
         }
     ],
     "model_files": [
-        "/home/federica/Scrivania/Uni/PROS/8-words-model-new.tflite"
+        "/home/federica/Scrivania/Uni/PROS/all-words-126frames-2coeffs-model.tflite"
     ],
-    "model_n_params": 25416,
-    "model_name": "wordsmodelnew",
-    "model_size": 27936,
+    "model_n_params": 48085,
+    "model_name": "allwords126frames2coeffsmodel",
+    "model_size": 49108,
     "model_type": "tflite",
     "name": "small_words_model",
     "outputs": [
-        "dense_8"
+        "nl_10"
     ],
     "ram_io_size": [
-        2048,
-        32
+        1008,
+        148
     ],
     "ram_size": [
-        21376,
-        21376
+        6592,
+        6592
     ],
     "report_version": 1.1,
     "rom_cfact": 1.0,
     "rom_heap_inspector": 2048,
     "rom_inputs": [
         {
-            "c_size": 2048,
+            "c_size": 1008,
             "c_type": "float",
-            "name": "serving_default_conv2d_input0"
+            "name": "serving_default_conv2d_1_input0"
         }
     ],
-    "rom_n_macc": 550184,
+    "rom_n_macc": 954480,
     "rom_outputs": [
         {
-            "c_size": 32,
+            "c_size": 148,
             "c_type": "float",
-            "name": "dense_8"
+            "name": "nl_10"
         }
     ],
-    "rom_size": 101664,
+    "rom_size": 192340,
     "strategy": "heap_overlay",
     "tools_api_version": {
         "major": 1,

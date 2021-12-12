@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    small_words_model_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sat Dec  4 17:22:46 2021
+  * @date    Sat Dec 11 19:25:39 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -27,11 +27,11 @@
 
 #define AI_SMALL_WORDS_MODEL_DATA_CONFIG               (NULL)
 
-#define AI_SMALL_WORDS_MODEL_DATA_ACTIVATIONS_SIZE     (21376)
+#define AI_SMALL_WORDS_MODEL_DATA_ACTIVATIONS_SIZE     (6592)
 
 #define AI_SMALL_WORDS_MODEL_DATA_ACTIVATIONS_COUNT    (1)
 
-#define AI_SMALL_WORDS_MODEL_DATA_WEIGHTS_SIZE         (101664)
+#define AI_SMALL_WORDS_MODEL_DATA_WEIGHTS_SIZE         (192340)
 
 #define AI_SMALL_WORDS_MODEL_DATA_WEIGHTS_COUNT        (1)
 

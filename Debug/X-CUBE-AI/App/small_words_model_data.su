@@ -1,2 +1,2 @@
-small_words_model_data.c:3216:11:ai_small_words_model_data_weights_get	4	static
-small_words_model_data.c:3235:9:ai_small_words_model_data_params_get	32	static
+small_words_model_data.c:6050:11:ai_small_words_model_data_weights_get	4	static
+small_words_model_data.c:6069:9:ai_small_words_model_data_params_get	32	static
