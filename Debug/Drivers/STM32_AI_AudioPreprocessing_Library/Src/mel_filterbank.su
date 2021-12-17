@@ -1,0 +1,4 @@
+mel_filterbank.c:61:6:MelFilterbank_Init	152	static
+mel_filterbank.c:213:6:MelFilterbank	56	static
+mel_filterbank.c:239:23:MelScale	40	static
+mel_filterbank.c:269:23:InverseMelScale	40	static

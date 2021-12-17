@@ -1,0 +1,2 @@
+speech_commands_model_data.c:5567:11:ai_speech_commands_model_data_weights_get	4	static
+speech_commands_model_data.c:5586:9:ai_speech_commands_model_data_params_get	32	static

@@ -1,0 +1,6 @@
+stm32f4_discovery_accelerometer.c:98:9:BSP_ACCELERO_Init	32	static
+stm32f4_discovery_accelerometer.c:181:9:BSP_ACCELERO_ReadID	16	static
+stm32f4_discovery_accelerometer.c:195:6:BSP_ACCELERO_Reset	8	static
+stm32f4_discovery_accelerometer.c:206:6:BSP_ACCELERO_Click_ITConfig	8	static
+stm32f4_discovery_accelerometer.c:217:6:BSP_ACCELERO_Click_ITClear	8	static
+stm32f4_discovery_accelerometer.c:230:6:BSP_ACCELERO_GetXYZ	24	static

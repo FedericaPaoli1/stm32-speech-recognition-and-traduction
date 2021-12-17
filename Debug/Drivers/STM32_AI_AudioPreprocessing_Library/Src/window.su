@@ -1,0 +1,2 @@
+window.c:46:9:Window_Init	32	static
+window.c:73:6:cosine_sum_window_create	64	static

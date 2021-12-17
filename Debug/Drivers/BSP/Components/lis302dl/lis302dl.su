@@ -1,0 +1,12 @@
+lis302dl.c:123:6:LIS302DL_Init	24	static
+lis302dl.c:141:6:LIS302DL_DeInit	4	static
+lis302dl.c:151:9:LIS302DL_ReadID	16	static
+lis302dl.c:170:6:LIS302DL_FilterConfig	24	static
+lis302dl.c:194:6:LIS302DL_InterruptConfig	24	static
+lis302dl.c:215:6:LIS302DL_Click_IntConfig	16	static
+lis302dl.c:267:6:LIS302DL_Click_IntClear	24	static
+lis302dl.c:284:6:LIS302DL_LowpowerCmd	24	static
+lis302dl.c:307:6:LIS302DL_DataRateCmd	24	static
+lis302dl.c:330:6:LIS302DL_FullScaleCmd	24	static
+lis302dl.c:350:6:LIS302DL_RebootCmd	16	static
+lis302dl.c:369:6:LIS302DL_ReadACC	40	static

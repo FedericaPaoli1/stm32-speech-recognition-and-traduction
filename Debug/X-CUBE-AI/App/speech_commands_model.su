@@ -1,0 +1,10 @@
+speech_commands_model.c:474:9:speech_commands_model_configure_activations	24	static
+speech_commands_model.c:513:9:speech_commands_model_configure_weights	24	static
+speech_commands_model.c:563:9:ai_speech_commands_model_get_info	136	static
+speech_commands_model.c:608:9:ai_speech_commands_model_get_report	136	static
+speech_commands_model.c:654:10:ai_speech_commands_model_get_error	16	static
+speech_commands_model.c:660:10:ai_speech_commands_model_create	24	static
+speech_commands_model.c:670:11:ai_speech_commands_model_destroy	16	static
+speech_commands_model.c:676:9:ai_speech_commands_model_init	24	static
+speech_commands_model.c:693:8:ai_speech_commands_model_run	24	static
+speech_commands_model.c:700:8:ai_speech_commands_model_forward	16	static

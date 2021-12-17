@@ -1,0 +1,10 @@
+lis3dsh.c:121:6:LIS3DSH_Init	24	static
+lis3dsh.c:146:6:LIS3DSH_DeInit	4	static
+lis3dsh.c:156:9:LIS3DSH_ReadID	16	static
+lis3dsh.c:176:6:LIS3DSH_InterruptConfig	24	static
+lis3dsh.c:208:6:LIS3DSH_Click_IntConfig	16	static
+lis3dsh.c:266:6:LIS3DSH_ODR_LowpowerCmd	24	static
+lis3dsh.c:296:6:LIS3DSH_DataRateCmd	24	static
+lis3dsh.c:322:6:LIS3DSH_FullScaleCmd	24	static
+lis3dsh.c:342:6:LIS3DSH_RebootCmd	16	static
+lis3dsh.c:361:6:LIS3DSH_ReadACC	40	static

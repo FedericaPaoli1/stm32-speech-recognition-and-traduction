@@ -32,13 +32,18 @@
 
 #include "ai_datatypes_defines.h"
 #include "ai_platform.h"
-#include "small_words_model.h"
-#include "small_words_model_data.h"
+#include "speech_commands_model.h"
+#include "speech_commands_model_data.h"
 #include "commands.h"
 
-#include "fft.h"
-#include "libmfcc.h"
+#include "arm_math.h"
 
+#include "feature_extraction.h"
+
+// BSP drivers
+#include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h"
+#include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h"
+#include "audio_record.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,8 +63,12 @@
 /* Private variables ---------------------------------------------------------*/
 CRC_HandleTypeDef hcrc;
 
+I2C_HandleTypeDef hi2c1;
+
 I2S_HandleTypeDef hi2s2;
 DMA_HandleTypeDef hdma_spi2_rx;
+
+SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart2;
 
@@ -74,14 +83,53 @@ static void MX_DMA_Init(void);
 static void MX_I2S2_Init(void);
 static void MX_CRC_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_I2C1_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
+
+// Initialize filtering structures
+void Preprocessing_Init(void);
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-// macro to print an uint16 as raw bytes
+/* For MFCCs computation -------------------------------------------- */
+#define SAMPLE_RATE  16000U /* Input signal sampling rate */
+#define FFT_LEN       2048U /* Number of FFT points. Must be greater or equal to FRAME_LEN */
+#define FRAME_LEN   FFT_LEN /* Window length and then padded with zeros to match FFT_LEN */
+#define HOP_LEN        512U /* Number of overlapping samples between successive frames */
+#define NUM_MELS       128U /* Number of mel bands */
+#define NUM_MEL_COEFS 2020U /* Number of mel filter weights. Returned by MelFilterbank_Init */
+#define NUM_MFCC        16U /* Number of MFCCs to return */
+
+arm_rfft_fast_instance_f32 S_Rfft;
+MelFilterTypeDef S_MelFilter;
+DCT_InstanceTypeDef S_DCT;
+SpectrogramTypeDef S_Spectr;
+MelSpectrogramTypeDef S_MelSpectr;
+LogMelSpectrogramTypeDef S_LogMelSpectr;
+MfccTypeDef S_Mfcc;
+
+float32_t pInFrame[FRAME_LEN];
+float32_t pOutColBuffer[NUM_MFCC];
+float32_t pWindowFuncBuffer[FRAME_LEN];
+float32_t pSpectrScratchBuffer[FFT_LEN];
+float32_t pDCTCoefsBuffer[NUM_MELS * NUM_MFCC];
+float32_t pMfccScratchBuffer[NUM_MELS];
+float32_t pMelFilterCoefs[NUM_MEL_COEFS];
+uint32_t pMelFilterStartIndices[NUM_MELS];
+uint32_t pMelFilterStopIndices[NUM_MELS];
+uint32_t num_frames = 1 + (WR_BUFFER_SIZE - FRAME_LEN) / HOP_LEN;
+//uint32_t num_frames = 1 + (16000 - FRAME_LEN) / HOP_LEN;
+
+/* -------------------------------------------- */
+
+// Check if button is pressed
+static uint8_t button_pressed = 0;
+
+// Macros to print an uint16 as raw bytes
 #define PRI_BYTES_2 "%c%c"
 #define ARG_BYTES_BE_2(var) \
 	((const char *)&(var))[1], \
@@ -91,15 +139,17 @@ static void MX_USART2_UART_Init(void);
 	((const char *)&(var))[0], \
 	((const char *)&(var))[1]
 
-#define WIN_LENGTH 256
-#define HOP_LENGTH WIN_LENGTH/2 // 64
+//#define WIN_LENGTH 128
+//#define HOP_LENGTH WIN_LENGTH/2 // 64
+//#define FFT_SIZE   128
 
 enum leds_status {
 	Off, Green, Blue, Red, Orange
 };
 
+#if 0
 //float pcm_buf[WIN_LENGTH];
-uint16_t pdmRxBuf[256];
+uint16_t pdmRxBuf[128];
 uint16_t MidBuffer[16];
 uint8_t rxstate = 0;
 
@@ -110,23 +160,54 @@ uint16_t fifobuf[FIFO_BUF_DIM];
 uint16_t fifo_w_ptr = 0;
 uint16_t fifo_r_ptr = 0;
 uint8_t fifo_read_enabled = 0;
+#endif
+
 uint8_t display_words_enabled = 0;
 enum leds_status led_status = Off;
 
+#if 0
 fft_complex_t pcm_data[WIN_LENGTH];
 double spectrum[WIN_LENGTH];
 int bits = 7; // log2(WIN_LENGTH)
+#endif
+
+/* For MFCCs computation -------------------------------------------- */
+void AudioPreprocessing_Run(int16_t *pInSignal, float32_t *pOutMfcc,
+		uint32_t signal_len) {
+	const uint32_t num_frames = 1 + (signal_len - FRAME_LEN) / HOP_LEN;
+
+	for (uint32_t frame_index = 0; frame_index < num_frames; frame_index++) {
+		buf_to_float_normed(&pInSignal[HOP_LEN * frame_index], pInFrame,
+		FRAME_LEN);
+
+		MfccColumn(&S_Mfcc, pInFrame, pOutColBuffer);
+		/* Reshape column into pOutMfcc */
+		for (uint32_t i = 0; i < NUM_MFCC; i++) {
+			pOutMfcc[i * num_frames + frame_index] = pOutColBuffer[i];
+		}
+	}
+}
+/* -------------------------------------------- */
 
 void debug(const char *c) {
 	HAL_UART_Transmit(&huart2, (uint8_t*) c, strlen(c),
 	HAL_MAX_DELAY);
 }
 
+void toggle_leds() {
+	BSP_LED_Toggle(LED3);
+	HAL_Delay(100);
+	BSP_LED_Toggle(LED4);
+	HAL_Delay(100);
+	BSP_LED_Toggle(LED5);
+	HAL_Delay(100);
+	BSP_LED_Toggle(LED6);
+	HAL_Delay(100);
+}
+
 // TODO: document me!
-// TODO cambiare puntatori a parole ONE, TWO, THREE, FOUR
 void recognize_commands(const char *word) {
-	// ONE
-	if (strcmp(word, UP) == 0) {
+	if (strcmp(word, ONE) == 0) {
 		if (led_status != Green) {
 			if (led_status == Blue) {
 				HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
@@ -139,9 +220,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 			led_status = Green;
 		}
-	}
-	// TWO
-	else if (strcmp(word, RIGHT) == 0) {
+	} else if (strcmp(word, TWO) == 0) {
 		if (led_status != Blue) {
 			if (led_status == Green) {
 				HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
@@ -154,9 +233,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
 			led_status = Blue;
 		}
-	}
-	// THREE
-	else if (strcmp(word, LEFT) == 0) {
+	} else if (strcmp(word, THREE) == 0) {
 		if (led_status != Red) {
 			if (led_status == Green) {
 				HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
@@ -169,9 +246,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD5_Pin);
 			led_status = Red;
 		}
-	}
-	// FOUR
-	else if (strcmp(word, DOWN) == 0) {
+	} else if (strcmp(word, FOUR) == 0) {
 		if (led_status != Orange) {
 			if (led_status == Green) {
 				HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
@@ -220,32 +295,39 @@ void recognize_commands(const char *word) {
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
+	//float32_t pOutMfcc[NUM_MFCC * num_frames];
 	char b[50];
 	int buf_len = 0;
 	ai_error ai_err;
 	ai_i32 nbatch;
 
+	/* Input test for the FFT */
+
+	//extern int16_t testInput_i16_16khz[16000];
+	//extern test_input_mfcc[448];
 	// Chunk of memory used to hold intermediate values for neural network
-	AI_ALIGNED(4) ai_u8 activations[AI_SMALL_WORDS_MODEL_DATA_ACTIVATIONS_SIZE];
+	AI_ALIGNED(4) ai_u8 activations[AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS_SIZE];
 	//AI_ALIGNED(4): specify a minimum alignment measured in bytes
 
 	// Buffers used to store input and output tensors
-	AI_ALIGNED(4) ai_float in_data[AI_SMALL_WORDS_MODEL_IN_1_SIZE_BYTES];
-	AI_ALIGNED(4) ai_float out_data[AI_SMALL_WORDS_MODEL_OUT_1_SIZE_BYTES];
+	AI_ALIGNED(4) ai_float in_data[AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE_BYTES];
+	AI_ALIGNED(4) ai_float out_data[AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE_BYTES];
 
 	// Pointer to our model
-	ai_handle small_words_model = AI_HANDLE_NULL;
+	ai_handle speech_commands_model = AI_HANDLE_NULL;
 
 	// Initialize wrapper structs that hold pointers to data and info about the
 	// data (tensor height, width, channels)
-	ai_buffer ai_input[AI_SMALL_WORDS_MODEL_IN_NUM] = AI_SMALL_WORDS_MODEL_IN;
-	ai_buffer ai_output[AI_SMALL_WORDS_MODEL_OUT_NUM] = AI_SMALL_WORDS_MODEL_OUT;
+	ai_buffer ai_input[AI_SPEECH_COMMANDS_MODEL_IN_NUM] =
+	AI_SPEECH_COMMANDS_MODEL_IN;
+	ai_buffer ai_output[AI_SPEECH_COMMANDS_MODEL_OUT_NUM] =
+	AI_SPEECH_COMMANDS_MODEL_OUT;
 
 	// Set working memory and get weights/biases from model
 	ai_network_params ai_params =
 					AI_NETWORK_PARAMS_INIT(
-							AI_SMALL_WORDS_MODEL_DATA_WEIGHTS(ai_small_words_model_data_weights_get()),
-							AI_SMALL_WORDS_MODEL_DATA_ACTIVATIONS(activations)
+							AI_SPEECH_COMMANDS_MODEL_DATA_WEIGHTS(ai_speech_commands_model_data_weights_get()),
+							AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS(activations)
 					);
 
 	// Set pointers wrapper structs to our data buffers
@@ -263,12 +345,23 @@ int main(void) {
 
 	/* USER CODE BEGIN Init */
 
+	// Initialize leds
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+	BSP_LED_Init(LED5);
+	BSP_LED_Init(LED6);
+
+	Preprocessing_Init();
+
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
 	SystemClock_Config();
 
 	/* USER CODE BEGIN SysInit */
+
+	// Initialize button
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
 
 	/* USER CODE END SysInit */
 
@@ -279,14 +372,17 @@ int main(void) {
 	MX_CRC_Init();
 	MX_PDM2PCM_Init();
 	MX_USART2_UART_Init();
+	MX_I2C1_Init();
+	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
-
+#if 0
 	// Start the DMA with halfof the PDM buffer dimension
-	HAL_I2S_Receive_DMA(&hi2s2, &pdmRxBuf[0], 128);
+	HAL_I2S_Receive_DMA(&hi2s2, &pdmRxBuf[0], 64);
+#endif
 
 	// Create instance of neural network
-	ai_err = ai_small_words_model_create(&small_words_model,
-	AI_SMALL_WORDS_MODEL_DATA_CONFIG);
+	ai_err = ai_speech_commands_model_create(&speech_commands_model,
+	AI_SPEECH_COMMANDS_MODEL_DATA_CONFIG);
 	if (ai_err.type != AI_ERROR_NONE) {
 		buf_len = sprintf(b, "Error: could not create NN instance\r\n");
 		HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
@@ -295,20 +391,176 @@ int main(void) {
 	}
 
 	// Initialize neural network
-	if (!ai_small_words_model_init(small_words_model, &ai_params)) {
+	if (!ai_speech_commands_model_init(speech_commands_model, &ai_params)) {
 		buf_len = sprintf(b, "Error: could not initialize NN\r\n");
 		HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 		while (1)
 			;
 	}
-
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-
+	//uint8_t printed = 0;
 	while (1) {
+		while (button_pressed) {
+			button_pressed = 0;
+			AudioRecord_Test();
 
+			/* Turn ON LED6: transmit recorded audio */
+			//BSP_LED_On(LED6);
+			// TODO: capire come mai il buffer viene riempito con 1 sec. di silenzio
+			/*	for (int i = 0; i < WR_BUFFER_SIZE; i++) {
+			 int l = sprintf(b, PRI_BYTES_2 "\r\n",
+			 ARG_BYTES_LE_2(WrBuffer[i]));
+			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+			 HAL_MAX_DELAY);
+			 }*/
+
+			//AudioPreprocessing_Run(WrBuffer, pOutMfcc, WR_BUFFER_SIZE);
+//		for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
+//			int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
+//			HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+//			HAL_MAX_DELAY);
+//		}
+			//	printed = 1;
+			//}
+			//AudioPreprocessing_Run(testInput_i16_16khz, pOutMfcc, 16000);
+//		AudioPreprocessing_Run(WrBuffer, pOutMfcc, WR_BUFFER_SIZE);
+//
+//		for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
+//						int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
+//						HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+//						HAL_MAX_DELAY);
+//					}
+			AudioPreprocessing_Run((int16_t*) &WrBuffer[0],
+					(ai_float*) &in_data[0],
+					WR_BUFFER_SIZE);
+
+			/*for (int i = 0; i < AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE; i++) {
+			 int l = sprintf(b, "%e\r\n", in_data[i]);
+			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+			 HAL_MAX_DELAY);
+			 }*/
+
+			//BSP_LED_Off(LED6);
+			// Perform inference
+			nbatch = ai_speech_commands_model_run(speech_commands_model,
+					&ai_input[0], &ai_output[0]);
+			if (nbatch != 1) {
+				buf_len = sprintf(b, "Error: could not run inference\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+			}
+
+			uint8_t idx = argmax(out_data, AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE);
+
+			char *word = get_word(idx);
+
+			recognize_commands(word);
+			//display_words_enabled = 1; // to remove
+
+			if (display_words_enabled) {
+
+				// Print output of neural network
+				buf_len = sprintf(b, "%d %s\r\n", idx, word);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+
+				// Wait before doing it again
+				HAL_Delay(500);
+			}
+		}
+		/*for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
+		 int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
+		 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+		 HAL_MAX_DELAY);
+		 }*/
+
+		//HAL_Delay(5 * 1000);
+#if 0
+		arm_rfft_fast_instance_f32 fft_inst;
+		float32_t fft_in[TEST_INPUT_SIZE], fft_out[TEST_INPUT_SIZE];
+		float32_t fft_mag[TEST_INPUT_SIZE >> 1];
+		arm_status status;
+
+		float pure_real_fft[TEST_INPUT_SIZE >> 1];
+
+		/* Initialize ARM FFT instance with num points */
+		status = arm_rfft_fast_init_f32(&fft_inst, TEST_INPUT_SIZE);
+
+		/* Fill the fft_in buffer from Line In or Microphone input */
+		// Fill an intermediate buffer with a number of elements equal to the window size
+//		for (int j = 0; j < FFT_SIZE; j++) {
+//			fft_in[j] = WrBuffer[i + j];
+//		}
+
+		/* Perform forward direction 32-bit FFT */
+		arm_rfft_fast_f32(&fft_inst, testInput_f32_10khz, fft_out, 0);
+
+		/* Calculate magnitude (buffer size is half because real + imag parts are merged) */
+		// arm_cmplx_mag_f32(fft_out, fft_mag, TEST_INPUT_SIZE >> 1);
+
+		if (status == ARM_MATH_SUCCESS) {
+			for (int i = 0; i < TEST_INPUT_SIZE >> 1; i += 2) {
+				pure_real_fft[i >> 1] = fft_out[i];
+			}
+
+			for (int i = 0; i < TEST_INPUT_SIZE >> 1; i++) {
+				int l = sprintf(b, "%f\r\n", pure_real_fft[i]);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+						HAL_MAX_DELAY);
+			}
+
+			int num_mfccs = 16;
+			for (int coeff = 0; coeff < num_mfccs; coeff++) {
+				float mfcc_result = GetCoefficient(pure_real_fft, 10000,
+						48,
+						TEST_INPUT_SIZE >> 1, coeff);
+				int l = sprintf(b, "%e\r\n", mfcc_result);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+				HAL_MAX_DELAY);
+			}
+
+
+		}
+
+
+		debug("---------------\r\n");
+#endif
+#if 0
+		// Perform a sliding window over the PCM buffer
+		for (int i = 0; i < (WR_BUFFER_SIZE - HOP_LENGTH); i += HOP_LENGTH)
+		{
+
+			/* Use max value in the results for scale */
+			//arm_max_f32(fft_mag, FFT_SIZE >> 1, &max_val, &max_idx);
+			/*// Compute the FFT
+			 fft_permutate(pcm_data, 3); // ??
+			 fft_forward(pcm_data, 3);
+
+			 // make FFT results purely real
+			 for (int i = 0; i < WIN_LENGTH; i++) {
+			 spectrum[i] = pcm_data[i].r;
+			 }
+
+			 for (int i = 0; i < WIN_LENGTH; i++) {
+			 int l = sprintf(b, "%e\r\n", spectrum[i]);
+			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+			 HAL_MAX_DELAY);
+			 }*/
+
+			// Compute the MFCCs
+			/*int num_mfccs = 2;
+			 for (int coeff = 0; coeff < num_mfccs; coeff++) {
+			 float mfcc_result = GetCoefficient(spectrum, 16000, num_mfccs,
+			 WIN_LENGTH, coeff);
+			 //				int l = sprintf(b, "%f\r\n", (ai_float) mfcc_result);
+			 //				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
+			 //				HAL_MAX_DELAY);
+			 }*/
+		}
+#endif
+
+#if 0
 		if (rxstate == 1) {
 			// Filter the first half of PDM values and store the results in an intermediate buffer
 			PDM_Filter(&pdmRxBuf[0], &MidBuffer[0], &PDM1_filter_handler);
@@ -327,7 +579,7 @@ int main(void) {
 
 		if (rxstate == 2) {
 			// Filter the second half of PDM values and store the results in an intermediate buffer
-			PDM_Filter(&pdmRxBuf[128], &MidBuffer[0], &PDM1_filter_handler);
+			PDM_Filter(&pdmRxBuf[64], &MidBuffer[0], &PDM1_filter_handler);
 			for (int i = 0; i < 16; i++) {
 				fifobuf[fifo_w_ptr] = MidBuffer[i];
 				fifo_w_ptr++;
@@ -461,6 +713,7 @@ int main(void) {
 			 // Wait before doing it again
 			 HAL_Delay(500);*/
 		}
+#endif
 	}
 
 	/* USER CODE END WHILE */
@@ -538,6 +791,38 @@ static void MX_CRC_Init(void) {
 }
 
 /**
+ * @brief I2C1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_I2C1_Init(void) {
+
+	/* USER CODE BEGIN I2C1_Init 0 */
+
+	/* USER CODE END I2C1_Init 0 */
+
+	/* USER CODE BEGIN I2C1_Init 1 */
+
+	/* USER CODE END I2C1_Init 1 */
+	hi2c1.Instance = I2C1;
+	hi2c1.Init.ClockSpeed = 100000;
+	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+	hi2c1.Init.OwnAddress1 = 0;
+	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+	hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+	hi2c1.Init.OwnAddress2 = 0;
+	hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+	hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+	if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN I2C1_Init 2 */
+
+	/* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
  * @brief I2S2 Initialization Function
  * @param None
  * @retval None
@@ -566,6 +851,42 @@ static void MX_I2S2_Init(void) {
 	/* USER CODE BEGIN I2S2_Init 2 */
 
 	/* USER CODE END I2S2_Init 2 */
+
+}
+
+/**
+ * @brief SPI1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_SPI1_Init(void) {
+
+	/* USER CODE BEGIN SPI1_Init 0 */
+
+	/* USER CODE END SPI1_Init 0 */
+
+	/* USER CODE BEGIN SPI1_Init 1 */
+
+	/* USER CODE END SPI1_Init 1 */
+	/* SPI1 parameter configuration*/
+	hspi1.Instance = SPI1;
+	hspi1.Init.Mode = SPI_MODE_MASTER;
+	hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+	hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi1.Init.NSS = SPI_NSS_SOFT;
+	hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+	hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi1.Init.CRCPolynomial = 10;
+	if (HAL_SPI_Init(&hspi1) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN SPI1_Init 2 */
+
+	/* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -633,6 +954,12 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(GPIOD, LD4_Pin | LD3_Pin | LD5_Pin | LD6_Pin,
 			GPIO_PIN_RESET);
 
+	/*Configure GPIO pin : PA0 */
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 	/*Configure GPIO pins : LD4_Pin LD3_Pin LD5_Pin LD6_Pin */
 	GPIO_InitStruct.Pin = LD4_Pin | LD3_Pin | LD5_Pin | LD6_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -640,16 +967,104 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+	/* EXTI interrupt init*/
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+
+void Preprocessing_Init(void) {
+	/* Init window function */
+	if (Window_Init(pWindowFuncBuffer, FRAME_LEN, WINDOW_HANN) != 0) {
+		debug("ERROR: window init failed\r\n");
+		while (1)
+			;
+	}
+
+	/* Init RFFT */
+	arm_rfft_fast_init_f32(&S_Rfft, FFT_LEN);
+
+	/* Init mel filterbank */
+	S_MelFilter.pStartIndices = pMelFilterStartIndices;
+	S_MelFilter.pStopIndices = pMelFilterStopIndices;
+	S_MelFilter.pCoefficients = pMelFilterCoefs;
+	S_MelFilter.NumMels = NUM_MELS;
+	S_MelFilter.FFTLen = FFT_LEN;
+	S_MelFilter.SampRate = SAMPLE_RATE;
+	S_MelFilter.FMin = 0.0;
+	S_MelFilter.FMax = S_MelFilter.SampRate / 2.0;
+	S_MelFilter.Formula = MEL_SLANEY;
+	S_MelFilter.Normalize = 1;
+	S_MelFilter.Mel2F = 1;
+	MelFilterbank_Init(&S_MelFilter);
+	if (S_MelFilter.CoefficientsLength != NUM_MEL_COEFS) {
+		debug("ERROR: MelFilterbank init failed\r\n");
+		while (1)
+			; /* Adjust NUM_MEL_COEFS to match S_MelFilter.CoefficientsLength */
+	}
+
+	/* Init DCT operation */
+	S_DCT.NumFilters = NUM_MFCC;
+	S_DCT.NumInputs = NUM_MELS;
+	S_DCT.Type = DCT_TYPE_II_ORTHO;
+	S_DCT.RemoveDCTZero = 0;
+	S_DCT.pDCTCoefs = pDCTCoefsBuffer;
+	if (DCT_Init(&S_DCT) != 0) {
+		debug("ERROR: DCT init failed\r\n");
+		while (1)
+			;
+	}
+
+	/* Init Spectrogram */
+	S_Spectr.pRfft = &S_Rfft;
+	S_Spectr.Type = SPECTRUM_TYPE_POWER;
+	S_Spectr.pWindow = pWindowFuncBuffer;
+	S_Spectr.SampRate = SAMPLE_RATE;
+	S_Spectr.FrameLen = FRAME_LEN;
+	S_Spectr.FFTLen = FFT_LEN;
+	S_Spectr.pScratch = pSpectrScratchBuffer;
+
+	/* Init MelSpectrogram */
+	S_MelSpectr.SpectrogramConf = &S_Spectr;
+	S_MelSpectr.MelFilter = &S_MelFilter;
+
+	/* Init LogMelSpectrogram */
+	S_LogMelSpectr.MelSpectrogramConf = &S_MelSpectr;
+	S_LogMelSpectr.LogFormula = LOGMELSPECTROGRAM_SCALE_DB;
+	S_LogMelSpectr.Ref = 1.0;
+	S_LogMelSpectr.TopdB = HUGE_VALF;
+
+	/* Init MFCC */
+	S_Mfcc.LogMelConf = &S_LogMelSpectr;
+	S_Mfcc.pDCT = &S_DCT;
+	S_Mfcc.NumMfccCoefs = NUM_MFCC; //20
+	S_Mfcc.pScratch = pMfccScratchBuffer;
+}
+
+/**
+ * @brief  EXTI line detection callbacks.
+ * @param  GPIO_Pin: Specifies the pins connected EXTI line
+ * @retval None
+ */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (GPIO_Pin == GPIO_PIN_0) {
+		button_pressed = 1;
+	}
+}
+
+#if 0
+// Wrappers for DMA transfer callbacks
+
+void BSP_AUDIO_IN_HalfTransfer_CallBack() {
 	rxstate = 1;
 }
 
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
+void BSP_AUDIO_IN_TransferComplete_CallBack() {
 	rxstate = 2;
 }
+#endif
 /* USER CODE END 4 */
 
 /**

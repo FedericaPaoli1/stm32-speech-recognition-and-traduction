@@ -1,0 +1,6 @@
+feature_extraction.c:38:6:buf_to_float	32	static
+feature_extraction.c:53:6:buf_to_float_normed	32	static
+feature_extraction.c:69:6:SpectrogramColumn	56	static
+feature_extraction.c:113:6:MelSpectrogramColumn	32	static
+feature_extraction.c:132:6:LogMelSpectrogramColumn	72	static
+feature_extraction.c:186:6:MfccColumn	32	static

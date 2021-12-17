@@ -1,0 +1,4 @@
+audio_record.c:77:6:AudioRecord_Test	8	static
+audio_record.c:198:6:BSP_AUDIO_IN_TransferComplete_CallBack	4	static
+audio_record.c:207:6:BSP_AUDIO_IN_HalfTransfer_CallBack	4	static
+audio_record.c:216:6:BSP_AUDIO_IN_Error_Callback	8	static

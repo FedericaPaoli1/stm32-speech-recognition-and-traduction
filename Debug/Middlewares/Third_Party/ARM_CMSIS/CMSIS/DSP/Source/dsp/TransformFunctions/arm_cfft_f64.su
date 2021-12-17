@@ -1,0 +1,3 @@
+arm_cfft_f64.c:61:6:arm_radix4_butterfly_f64	184	static
+arm_cfft_f64.c:195:6:arm_cfft_radix4by2_f64	136	static
+arm_cfft_f64.c:260:6:arm_cfft_f64	64	static

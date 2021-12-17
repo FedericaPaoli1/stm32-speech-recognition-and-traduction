@@ -23,11 +23,25 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_accelerometer.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis302dl/lis302dl.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis302dl/../Common/accelero.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis3dsh/lis3dsh.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis3dsh/../Common/accelero.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/cs43l22/cs43l22.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/cs43l22/../Common/audio.h \
+ ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h
 
 ../Core/Inc/main.h:
 
@@ -79,6 +93,10 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
 
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c_ex.h:
+
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s_ex.h:
@@ -87,4 +105,28 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
+
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_accelerometer.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis302dl/lis302dl.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis302dl/../Common/accelero.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis3dsh/lis3dsh.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/lis3dsh/../Common/accelero.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/cs43l22/cs43l22.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../Components/cs43l22/../Common/audio.h:
+
+../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h:

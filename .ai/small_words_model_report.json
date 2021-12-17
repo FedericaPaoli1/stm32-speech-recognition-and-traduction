@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/all-words-126frames-2coeffs-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace3338932767945710691709512192570682 --output /home/federica/.stm32cubemx",
+    "cli_parameters": "generate --name small_words_model -m /home/federica/Scrivania/Uni/PROS/all-words-126frames-2coeffs-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace90340833073251023785190513785308 --output /home/federica/.stm32cubemx",
     "cli_version": {
         "major": 1,
         "micro": 1,
@@ -12,7 +12,7 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Sat Dec 11 19:25:39 2021",
+    "date_time": "Tue Dec 14 14:29:14 2021",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",

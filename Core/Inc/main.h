@@ -32,7 +32,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h"
+#include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_accelerometer.h"
+#include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -47,6 +50,12 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+/* Size of the recorder buffer (Multiple of 4096, RAM_BUFFER_SIZE used in BSP) */
+#define WR_BUFFER_SIZE       0x3ff0 //16368 // 0x7fe0 32736  // 0x7000  28_672
+
+#define PAUSE_STATUS     ((uint32_t)0x00) /* Audio Player in Pause Status */
+#define RESUME_STATUS    ((uint32_t)0x01) /* Audio Player in Resume Status */
+#define IDLE_STATUS      ((uint32_t)0x02) /* Audio Player in Idle Status */
 
 /* USER CODE END EM */
 
