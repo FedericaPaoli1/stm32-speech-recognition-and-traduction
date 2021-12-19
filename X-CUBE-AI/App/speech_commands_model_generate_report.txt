@@ -1,13 +1,13 @@
 Neural Network Tools for STM32AI v1.5.1 (STM.ai v7.0.0-RC8)
-Created date          : 2021-12-18 18:33:21
-Parameters            : generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace1549836228230616071636131782004717 --output /home/federica/.stm32cubemx
+Created date          : 2021-12-19 16:40:01
+Parameters            : generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace2101099304807915282934069393874589 --output /home/federica/.stm32cubemx
 
 Exec/report summary (generate)
 ------------------------------------------------------------------------------------------------------------------------
 model file            : /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite
 type                  : tflite
 c_name                : speech_commands_model
-workspace dir         : /tmp/mxAI_workspace1549836228230616071636131782004717
+workspace dir         : /tmp/mxAI_workspace2101099304807915282934069393874589
 output dir            : /home/federica/.stm32cubemx
 
 model_name            : originalspeechcommandsmodel

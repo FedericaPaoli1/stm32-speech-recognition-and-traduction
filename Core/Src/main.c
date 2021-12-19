@@ -91,7 +91,7 @@ static void MX_SPI1_Init(void);
 
 // Initialize filtering structures
 void Preprocessing_Init(void);
-
+void SleepMode(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -141,10 +141,6 @@ static uint8_t button_pressed = 0;
 	((const char *)&(var))[0], \
 	((const char *)&(var))[1]
 
-//#define WIN_LENGTH 128
-//#define HOP_LENGTH WIN_LENGTH/2 // 64
-//#define FFT_SIZE   128
-
 enum leds_status {
 	Off, Green, Blue, Red, Orange
 };
@@ -152,30 +148,9 @@ enum leds_status {
 char b[50];
 int buf_len = 0;
 
-#if 0
-//float pcm_buf[WIN_LENGTH];
-uint16_t pdmRxBuf[128];
-uint16_t MidBuffer[16];
-uint8_t rxstate = 0;
-
-// Setting the fifobuf with this dimension, the final framing results in 126 frames
-#define FIFO_BUF_DIM 8128
-
-uint16_t fifobuf[FIFO_BUF_DIM];
-uint16_t fifo_w_ptr = 0;
-uint16_t fifo_r_ptr = 0;
-uint8_t fifo_read_enabled = 0;
-#endif
-
 uint8_t display_words_enabled = 0;
 uint8_t print_words = 1;
 enum leds_status led_status = Off;
-
-#if 0
-fft_complex_t pcm_data[WIN_LENGTH];
-double spectrum[WIN_LENGTH];
-int bits = 7; // log2(WIN_LENGTH)
-#endif
 
 /* For MFCCs computation -------------------------------------------- */
 void AudioPreprocessing_Run(int16_t *pInSignal, float32_t *pOutMfcc,
@@ -309,10 +284,12 @@ void recognize_commands(const char *word) {
 			for (uint8_t i = 0; i < ELAPSED_TIME_MAX_SECTIONS; i++) {
 				switch (i) {
 				case 0:
-					buf_len = sprintf(b, "Audio acquisition execution time:\r\n");
+					buf_len = sprintf(b,
+							"Audio acquisition execution time:\r\n");
 					break;
 				case 1:
-					buf_len = sprintf(b, "MFCCs extraction execution time:\r\n");
+					buf_len = sprintf(b,
+							"MFCCs extraction execution time:\r\n");
 					break;
 				case 2:
 					buf_len = sprintf(b, "Inference execution time:\r\n");
@@ -324,7 +301,7 @@ void recognize_commands(const char *word) {
 				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 
 				buf_len = sprintf(b, "\telapsed=%lu\r\n",
-									elapsed_time_tbl[i].current);
+						elapsed_time_tbl[i].current);
 				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 
 				buf_len = sprintf(b, "\tmax=%lu\r\n", elapsed_time_tbl[i].max);
@@ -337,7 +314,7 @@ void recognize_commands(const char *word) {
 
 			print_words = 0;
 
-			buf_len = sprintf(b,"Execution times are now reset\r\n");
+			buf_len = sprintf(b, "Execution times are now reset\r\n");
 			HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 
 			for (uint8_t i = 0; i < ELAPSED_TIME_MAX_SECTIONS; i++) {
@@ -355,40 +332,36 @@ void recognize_commands(const char *word) {
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
-//float32_t pOutMfcc[NUM_MFCC * num_frames];
+
 	ai_error ai_err;
 	ai_i32 nbatch;
 
-	/* Input test for the FFT */
-
-//extern int16_t testInput_i16_16khz[16000];
-//extern test_input_mfcc[448];
-// Chunk of memory used to hold intermediate values for neural network
+	// Chunk of memory used to hold intermediate values for neural network
 	AI_ALIGNED(4) ai_u8 activations[AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS_SIZE];
-//AI_ALIGNED(4): specify a minimum alignment measured in bytes
+	//AI_ALIGNED(4): specify a minimum alignment measured in bytes
 
-// Buffers used to store input and output tensors
+	// Buffers used to store input and output tensors
 	AI_ALIGNED(4) ai_float in_data[AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE_BYTES];
 	AI_ALIGNED(4) ai_float out_data[AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE_BYTES];
 
-// Pointer to our model
+	// Pointer to our model
 	ai_handle speech_commands_model = AI_HANDLE_NULL;
 
-// Initialize wrapper structs that hold pointers to data and info about the
-// data (tensor height, width, channels)
+	// Initialize wrapper structs that hold pointers to data and info about the
+	// data (tensor height, width, channels)
 	ai_buffer ai_input[AI_SPEECH_COMMANDS_MODEL_IN_NUM] =
 	AI_SPEECH_COMMANDS_MODEL_IN;
 	ai_buffer ai_output[AI_SPEECH_COMMANDS_MODEL_OUT_NUM] =
 	AI_SPEECH_COMMANDS_MODEL_OUT;
 
-// Set working memory and get weights/biases from model
+	// Set working memory and get weights/biases from model
 	ai_network_params ai_params =
 					AI_NETWORK_PARAMS_INIT(
 							AI_SPEECH_COMMANDS_MODEL_DATA_WEIGHTS(ai_speech_commands_model_data_weights_get()),
 							AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS(activations)
 					);
 
-// Set pointers wrapper structs to our data buffers
+	// Set pointers wrapper structs to our data buffers
 	ai_input[0].n_batches = 1;
 	ai_input[0].data = AI_HANDLE_PTR(in_data);
 	ai_output[0].n_batches = 1;
@@ -403,7 +376,7 @@ int main(void) {
 
 	/* USER CODE BEGIN Init */
 
-// Initialize leds
+	// Initialize leds
 	BSP_LED_Init(LED3);
 	BSP_LED_Init(LED4);
 	BSP_LED_Init(LED5);
@@ -420,7 +393,7 @@ int main(void) {
 
 	/* USER CODE BEGIN SysInit */
 
-// Initialize button
+	// Initialize button
 	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
 
 	/* USER CODE END SysInit */
@@ -435,12 +408,8 @@ int main(void) {
 	MX_I2C1_Init();
 	MX_SPI1_Init();
 	/* USER CODE BEGIN 2 */
-#if 0
-	// Start the DMA with halfof the PDM buffer dimension
-	HAL_I2S_Receive_DMA(&hi2s2, &pdmRxBuf[0], 64);
-#endif
 
-// Create instance of neural network
+	// Create instance of neural network
 	ai_err = ai_speech_commands_model_create(&speech_commands_model,
 	AI_SPEECH_COMMANDS_MODEL_DATA_CONFIG);
 	if (ai_err.type != AI_ERROR_NONE) {
@@ -450,341 +419,58 @@ int main(void) {
 			;
 	}
 
-// Initialize neural network
+	// Initialize neural network
 	if (!ai_speech_commands_model_init(speech_commands_model, &ai_params)) {
 		buf_len = sprintf(b, "Error: could not initialize NN\r\n");
 		HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 		while (1)
 			;
 	}
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-//uint8_t printed = 0;
 	while (1) {
-		while (button_pressed) {
-			button_pressed = 0;
+		SleepMode();
 
-			elapsed_time_start(0);
-			AudioRecord_Test();
-			elapsed_time_stop(0);
+		elapsed_time_start(0);
+		AudioRecord_Test();
+		elapsed_time_stop(0);
 
-			/* Turn ON LED6: transmit recorded audio */
-			//BSP_LED_On(LED6);
-			// TODO: capire come mai il buffer viene riempito con 1 sec. di silenzio
-			/*	for (int i = 0; i < WR_BUFFER_SIZE; i++) {
-			 int l = sprintf(b, PRI_BYTES_2 "\r\n",
-			 ARG_BYTES_LE_2(WrBuffer[i]));
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 HAL_MAX_DELAY);
-			 }*/
+		elapsed_time_start(1);
+		AudioPreprocessing_Run((int16_t*) &WrBuffer[0], (ai_float*) &in_data[0],
+		WR_BUFFER_SIZE);
+		elapsed_time_stop(1);
 
-			//AudioPreprocessing_Run(WrBuffer, pOutMfcc, WR_BUFFER_SIZE);
-//		for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
-//			int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
-//			HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-//			HAL_MAX_DELAY);
-//		}
-			//	printed = 1;
-			//}
-			//AudioPreprocessing_Run(testInput_i16_16khz, pOutMfcc, 16000);
-//		AudioPreprocessing_Run(WrBuffer, pOutMfcc, WR_BUFFER_SIZE);
-//
-//		for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
-//						int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
-//						HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-//						HAL_MAX_DELAY);
-//					}
-			elapsed_time_start(1);
-			AudioPreprocessing_Run((int16_t*) &WrBuffer[0],
-					(ai_float*) &in_data[0],
-					WR_BUFFER_SIZE);
-			elapsed_time_stop(1);
+		// Perform inference
+		elapsed_time_start(2);
+		nbatch = ai_speech_commands_model_run(speech_commands_model,
+				&ai_input[0], &ai_output[0]);
+		elapsed_time_stop(2);
 
-			/*for (int i = 0; i < AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE; i++) {
-			 int l = sprintf(b, "%e\r\n", in_data[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 HAL_MAX_DELAY);
-			 }*/
+		if (nbatch != 1) {
+			buf_len = sprintf(b, "Error: could not run inference\r\n");
+			HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+		}
 
-			//BSP_LED_Off(LED6);
-			// Perform inference
-			elapsed_time_start(2);
-			nbatch = ai_speech_commands_model_run(speech_commands_model,
-					&ai_input[0], &ai_output[0]);
-			elapsed_time_stop(2);
+		uint8_t idx = argmax(out_data, AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE);
 
-			if (nbatch != 1) {
-				buf_len = sprintf(b, "Error: could not run inference\r\n");
+		char *word = get_word(idx);
+
+		print_words = 1;
+
+		recognize_commands(word);
+		//display_words_enabled = 1; // only for debug -> to remove
+
+		if (display_words_enabled) {
+			// Do not print ON and VISUAL, since `recognize_commands` prints special messages for them
+			if (print_words) {
+				// Print output of neural network
+				buf_len = sprintf(b, "%d %s\r\n", idx, word);
 				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
 			}
-
-			uint8_t idx = argmax(out_data, AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE);
-
-			char *word = get_word(idx);
-
-			print_words = 1;
-
-			recognize_commands(word);
-			//display_words_enabled = 1; // to remove
-
-			if (display_words_enabled) {
-				// Do not print ON, since `recognize_commands` prints special messages for it
-				if (print_words) {
-					// Print output of neural network
-
-					buf_len = sprintf(b, "%d %s\r\n", idx, word);
-					HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
-				}
-			}
-
 		}
-		/*for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
-		 int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
-		 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-		 HAL_MAX_DELAY);
-		 }*/
-
-		//HAL_Delay(5 * 1000);
-#if 0
-		arm_rfft_fast_instance_f32 fft_inst;
-		float32_t fft_in[TEST_INPUT_SIZE], fft_out[TEST_INPUT_SIZE];
-		float32_t fft_mag[TEST_INPUT_SIZE >> 1];
-		arm_status status;
-
-		float pure_real_fft[TEST_INPUT_SIZE >> 1];
-
-		/* Initialize ARM FFT instance with num points */
-		status = arm_rfft_fast_init_f32(&fft_inst, TEST_INPUT_SIZE);
-
-		/* Fill the fft_in buffer from Line In or Microphone input */
-		// Fill an intermediate buffer with a number of elements equal to the window size
-//		for (int j = 0; j < FFT_SIZE; j++) {
-//			fft_in[j] = WrBuffer[i + j];
-//		}
-
-		/* Perform forward direction 32-bit FFT */
-		arm_rfft_fast_f32(&fft_inst, testInput_f32_10khz, fft_out, 0);
-
-		/* Calculate magnitude (buffer size is half because real + imag parts are merged) */
-		// arm_cmplx_mag_f32(fft_out, fft_mag, TEST_INPUT_SIZE >> 1);
-
-		if (status == ARM_MATH_SUCCESS) {
-			for (int i = 0; i < TEST_INPUT_SIZE >> 1; i += 2) {
-				pure_real_fft[i >> 1] = fft_out[i];
-			}
-
-			for (int i = 0; i < TEST_INPUT_SIZE >> 1; i++) {
-				int l = sprintf(b, "%f\r\n", pure_real_fft[i]);
-				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-						HAL_MAX_DELAY);
-			}
-
-			int num_mfccs = 16;
-			for (int coeff = 0; coeff < num_mfccs; coeff++) {
-				float mfcc_result = GetCoefficient(pure_real_fft, 10000,
-						48,
-						TEST_INPUT_SIZE >> 1, coeff);
-				int l = sprintf(b, "%e\r\n", mfcc_result);
-				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-				HAL_MAX_DELAY);
-			}
-
-
-		}
-
-
-		debug("---------------\r\n");
-#endif
-#if 0
-		// Perform a sliding window over the PCM buffer
-		for (int i = 0; i < (WR_BUFFER_SIZE - HOP_LENGTH); i += HOP_LENGTH)
-		{
-
-			/* Use max value in the results for scale */
-			//arm_max_f32(fft_mag, FFT_SIZE >> 1, &max_val, &max_idx);
-			/*// Compute the FFT
-			 fft_permutate(pcm_data, 3); // ??
-			 fft_forward(pcm_data, 3);
-
-			 // make FFT results purely real
-			 for (int i = 0; i < WIN_LENGTH; i++) {
-			 spectrum[i] = pcm_data[i].r;
-			 }
-
-			 for (int i = 0; i < WIN_LENGTH; i++) {
-			 int l = sprintf(b, "%e\r\n", spectrum[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 HAL_MAX_DELAY);
-			 }*/
-
-			// Compute the MFCCs
-			/*int num_mfccs = 2;
-			 for (int coeff = 0; coeff < num_mfccs; coeff++) {
-			 float mfcc_result = GetCoefficient(spectrum, 16000, num_mfccs,
-			 WIN_LENGTH, coeff);
-			 //				int l = sprintf(b, "%f\r\n", (ai_float) mfcc_result);
-			 //				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 //				HAL_MAX_DELAY);
-			 }*/
-		}
-#endif
-
-#if 0
-		if (rxstate == 1) {
-			// Filter the first half of PDM values and store the results in an intermediate buffer
-			PDM_Filter(&pdmRxBuf[0], &MidBuffer[0], &PDM1_filter_handler);
-
-			// The mid buffer has length 16 because the PDM is configured to produce 16 samples
-			// of PCM each time it is called
-			for (int i = 0; i < 16; i++) {
-				fifobuf[fifo_w_ptr] = MidBuffer[i];
-				fifo_w_ptr++;
-			}
-
-			// Reset rx state
-			rxstate = 0;
-
-		}
-
-		if (rxstate == 2) {
-			// Filter the second half of PDM values and store the results in an intermediate buffer
-			PDM_Filter(&pdmRxBuf[64], &MidBuffer[0], &PDM1_filter_handler);
-			for (int i = 0; i < 16; i++) {
-				fifobuf[fifo_w_ptr] = MidBuffer[i];
-				fifo_w_ptr++;
-			}
-			// Reset rx state
-			rxstate = 0;
-		}
-
-		// When the PCM buffer is full, compute the MFCCs
-		if (fifo_w_ptr == FIFO_BUF_DIM) {
-			// Stop the DMA
-			HAL_I2S_DMAPause(&hi2s2);
-
-			// Reset the buffer pointer to the beginning
-			fifo_w_ptr = 0;
-
-			HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
-
-			for (int i = 0; i < FIFO_BUF_DIM; i++) {
-				int l = sprintf(b, PRI_BYTES_2 "\r\n",
-						ARG_BYTES_BE_2(fifobuf[i]));
-				HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-				HAL_MAX_DELAY);
-			}
-
-			// Temporary value to compute the number of slides the below algorithm computes
-			// With window = 128 and hot = 64 => slides = 124
-			int slides = 0;
-			int mfccs_idx = 0;
-
-			// Perform a sliding window over the PCM buffer
-			for (int i = 0; i < (FIFO_BUF_DIM - HOP_LENGTH); i += HOP_LENGTH)
-			{
-
-				slides++;
-
-				HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
-				// Fill an intermediate buffer with a number of elements equal to the window size
-				for (int j = 0; j < WIN_LENGTH; j++) {
-					pcm_data[j].r = (fft_t) fifobuf[i + j];
-				}
-
-				/*for (int i = 0; i < FIFO_BUF_DIM; i++) {
-				 int l = sprintf(b, PRI_BYTES_2 "\r\n",
-				 ARG_BYTES_BE_2(pcm_data[i].r));
-				 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-				 HAL_MAX_DELAY);
-				 }*/
-
-				/*
-				 POST PROCESSING non serve dal momento che otteniamo alla fine degli interi
-
-				 PCM_post_processing(pcm_buf);
-
-				 for (int i = 0; i < 128; i++) {
-				 pcm_data[i].r = pcm_buf[i];
-				 }*/
-
-				// Compute the FFT
-				fft_permutate(pcm_data, bits);
-				fft_forward(pcm_data, bits);
-
-				// make FFT results purely real
-				for (int i = 0; i < WIN_LENGTH; i++) {
-					spectrum[i] = pcm_data[i].r;
-				}
-
-				// Compute the MFCCs
-				int num_mfccs = 2;
-				for (int coeff = 0; coeff < num_mfccs; coeff++) {
-					float mfcc_result = GetCoefficient(spectrum, 8000,
-							num_mfccs,
-							WIN_LENGTH, coeff);
-					in_data[mfccs_idx] = (ai_float) mfcc_result;
-					mfccs_idx++;
-					int l = sprintf(b, "%f\r\n", (ai_float) mfcc_result);
-					HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-					HAL_MAX_DELAY);
-				}
-				//buf_len = sprintf(b, "%d-- Slide: %d, Frame: %d ---\r\n",
-				//		mfccs_idx, slides, i);
-				//HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len,
-				//HAL_MAX_DELAY);
-
-				HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
-			}
-
-			// The computation of the MFCCs is completed, so start again acquiring new signals
-			HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
-			HAL_I2S_DMAResume(&hi2s2);
-
-			/*for (int i = 0; i < AI_SMALL_WORDS_MODEL_IN_1_SIZE; i++) {
-			 //in_data[i] = (float) rand() / ((float) (RAND_MAX) * 5.0);
-			 int l = sprintf(b, "%f\r\n", in_data[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 HAL_MAX_DELAY);
-			 }*/
-
-			/*// Fill input buffer (use test value)
-			 for (uint32_t i = 0; i < AI_SMALL_WORDS_MODEL_IN_1_SIZE; i++) {
-			 ((ai_float*) in_data)[i] = (ai_float) in_array[i];
-			 }*/
-
-			// Perform inference
-			/*nbatch = ai_small_words_model_run(small_words_model, &ai_input[0],
-			 &ai_output[0]);
-			 if (nbatch != 1) {
-			 buf_len = sprintf(b, "Error: could not run inference\r\n");
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
-			 }
-
-			 /*for (int i = 0; i < AI_SMALL_WORDS_MODEL_OUT_1_SIZE; i++) {
-			 int l = sprintf(b, "%f\r\n", out_data[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
-			 HAL_MAX_DELAY);
-			 }*/
-
-			/*uint8_t idx = argmax(out_data, AI_SMALL_WORDS_MODEL_OUT_1_SIZE);
-
-			 char *word = get_word(idx);
-
-			 recognize_commands(word);
-			 display_words_enabled = 1; // to remove
-
-			 if (display_words_enabled) {
-
-			 // Print output of neural network
-			 buf_len = sprintf(b, "%d %s\r\n", idx, word);
-			 HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
-
-			 // Wait before doing it again
-			 HAL_Delay(500);*/
-		}
-#endif
 	}
 
 	/* USER CODE END WHILE */
@@ -1119,23 +805,34 @@ void Preprocessing_Init(void) {
  * @param  GPIO_Pin: Specifies the pins connected EXTI line
  * @retval None
  */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin == GPIO_PIN_0) {
-		button_pressed = 1;
-	}
+/*void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+ if (GPIO_Pin == GPIO_PIN_0) {
+ button_pressed = 1;
+ }
+ }*/
+
+void SleepMode(void) {
+
+	HAL_UART_DeInit(&huart2);
+	HAL_I2S_DeInit(&hi2s2);
+
+	/* Suspend Tick increment to prevent wakeup by Systick interrupt.
+	 Otherwise the Systick interrupt will wake up the device within 1ms (HAL time base) */
+	HAL_SuspendTick();
+
+	/* Request to enter SLEEP mode */
+	HAL_PWR_EnterSLEEPMode(0, PWR_SLEEPENTRY_WFI);
+
+	/* Resume Tick interrupt if disabled prior to sleep mode entry*/
+	HAL_ResumeTick();
+
+	/* Reinitialize UART2 */
+	MX_USART2_UART_Init();
+
+	/* Reinitialize I2S2 */
+	MX_I2S2_Init();
 }
 
-#if 0
-// Wrappers for DMA transfer callbacks
-
-void BSP_AUDIO_IN_HalfTransfer_CallBack() {
-	rxstate = 1;
-}
-
-void BSP_AUDIO_IN_TransferComplete_CallBack() {
-	rxstate = 2;
-}
-#endif
 /* USER CODE END 4 */
 
 /**

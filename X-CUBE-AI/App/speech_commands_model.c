@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    speech_commands_model.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sat Dec 18 18:33:21 2021
+  * @date    Sun Dec 19 16:40:01 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -43,7 +43,7 @@
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "Sat Dec 18 18:33:21 2021"
+#define AI_TOOLS_DATE_TIME   "Sun Dec 19 16:40:01 2021"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__

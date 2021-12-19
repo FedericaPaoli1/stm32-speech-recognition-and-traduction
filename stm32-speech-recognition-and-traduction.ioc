@@ -15,6 +15,7 @@ Dma.SPI2_RX.0.PeriphInc=DMA_PINC_DISABLE
 Dma.SPI2_RX.0.Priority=DMA_PRIORITY_HIGH
 Dma.SPI2_RX.0.RequestParameters=Instance,Direction,PeriphInc,MemInc,PeriphDataAlignment,MemDataAlignment,Mode,Priority,FIFOMode
 File.Version=6
+GPIO.groupedBy=Group By Peripherals
 I2S2.AudioFreq=I2S_AUDIOFREQ_8K
 I2S2.AudioFreqCustom=9000
 I2S2.CPOL=I2S_CPOL_LOW
