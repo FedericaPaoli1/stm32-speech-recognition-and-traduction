@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/third-speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace49945430686432470813147166573803 --output /home/federica/.stm32cubemx",
+    "cli_parameters": "generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace1549836228230616071636131782004717 --output /home/federica/.stm32cubemx",
     "cli_version": {
         "major": 1,
         "micro": 1,
@@ -12,7 +12,7 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Fri Dec 17 22:53:56 2021",
+    "date_time": "Sat Dec 18 18:33:21 2021",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
@@ -312,10 +312,10 @@
         }
     ],
     "model_files": [
-        "/home/federica/Scrivania/Uni/PROS/third-speech-commands-model.tflite"
+        "/home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite"
     ],
     "model_n_params": 44222,
-    "model_name": "thirdspeechcommandsmodel",
+    "model_name": "originalspeechcommandsmodel",
     "model_size": 46712,
     "model_type": "tflite",
     "name": "speech_commands_model",

@@ -7,6 +7,7 @@
 C_SRCS += \
 ../Core/Src/audio_record.c \
 ../Core/Src/commands.c \
+../Core/Src/elapsed_time.c \
 ../Core/Src/main.c \
 ../Core/Src/stm32f4xx_hal_msp.c \
 ../Core/Src/stm32f4xx_it.c \
@@ -17,6 +18,7 @@ C_SRCS += \
 OBJS += \
 ./Core/Src/audio_record.o \
 ./Core/Src/commands.o \
+./Core/Src/elapsed_time.o \
 ./Core/Src/main.o \
 ./Core/Src/stm32f4xx_hal_msp.o \
 ./Core/Src/stm32f4xx_it.o \
@@ -27,6 +29,7 @@ OBJS += \
 C_DEPS += \
 ./Core/Src/audio_record.d \
 ./Core/Src/commands.d \
+./Core/Src/elapsed_time.d \
 ./Core/Src/main.d \
 ./Core/Src/stm32f4xx_hal_msp.d \
 ./Core/Src/stm32f4xx_it.d \

@@ -681,7 +681,7 @@
     "c_weights_count": 1,
     "c_weights_header": 0,
     "data_alignment": 4,
-    "date_time": "Fri Dec 17 22:53:56 2021",
+    "date_time": "Sat Dec 18 18:33:21 2021",
     "inputs": [
         "serving_default_conv2d_21_input0_output"
     ],
@@ -695,7 +695,7 @@
         "series": "generic",
         "weights": 176888
     },
-    "model_name": "thirdspeechcommandsmodel",
+    "model_name": "originalspeechcommandsmodel",
     "outputs": [
         "nl_7_output"
     ],

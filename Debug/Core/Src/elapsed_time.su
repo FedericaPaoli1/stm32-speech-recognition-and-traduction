@@ -1,0 +1,4 @@
+elapsed_time.c:42:6:elapsed_time_init	16	static
+elapsed_time.c:61:6:elapsed_time_start	16	static
+elapsed_time.c:71:6:elapsed_time_stop	24	static
+elapsed_time.c:92:6:elapsed_time_clr	24	static

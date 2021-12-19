@@ -1,5 +1,6 @@
 "./Core/Src/audio_record.o"
 "./Core/Src/commands.o"
+"./Core/Src/elapsed_time.o"
 "./Core/Src/main.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"

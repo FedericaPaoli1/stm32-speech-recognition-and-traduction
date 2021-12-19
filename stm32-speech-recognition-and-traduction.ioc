@@ -206,7 +206,7 @@ STMicroelectronics.X-CUBE-AI.7.0.0.ModelMacc-ec8d6dc0aa295b05e866479a43a90cfb7a5
 STMicroelectronics.X-CUBE-AI.7.0.0.ModelName-ec8d6dc0aa295b05e866479a43a90cfb7a5666832c3120f329fbb4936ae1a87f=speech_commands_model
 STMicroelectronics.X-CUBE-AI.7.0.0.ModelNameList=speech_commands_model
 STMicroelectronics.X-CUBE-AI.7.0.0.ModelRamOccupation-ec8d6dc0aa295b05e866479a43a90cfb7a5666832c3120f329fbb4936ae1a87f=15544
-STMicroelectronics.X-CUBE-AI.7.0.0.ModelStructureFile-ec8d6dc0aa295b05e866479a43a90cfb7a5666832c3120f329fbb4936ae1a87f=/home/federica/Scrivania/Uni/PROS/third-speech-commands-model.tflite
+STMicroelectronics.X-CUBE-AI.7.0.0.ModelStructureFile-ec8d6dc0aa295b05e866479a43a90cfb7a5666832c3120f329fbb4936ae1a87f=/home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite
 STMicroelectronics.X-CUBE-AI.7.0.0.ModelType-ec8d6dc0aa295b05e866479a43a90cfb7a5666832c3120f329fbb4936ae1a87f=STM32Cube.AI runtime
 STMicroelectronics.X-CUBE-AI.7.0.0.ReadyForCodeGeneration=true
 STMicroelectronics.X-CUBE-AI.7.0.0.StackSize=0x800

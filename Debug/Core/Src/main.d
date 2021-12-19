@@ -87,7 +87,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h \
  ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h \
  ../Core/Inc/audio_record.h ../Core/Inc/main.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h \
+ ../Core/Inc/elapsed_time.h
 
 ../Core/Inc/main.h:
 
@@ -272,3 +273,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/main.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h:
+
+../Core/Inc/elapsed_time.h:

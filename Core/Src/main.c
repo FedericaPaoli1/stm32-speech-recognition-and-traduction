@@ -44,6 +44,8 @@
 #include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h"
 #include "../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h"
 #include "audio_record.h"
+
+#include "elapsed_time.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -147,6 +149,9 @@ enum leds_status {
 	Off, Green, Blue, Red, Orange
 };
 
+char b[50];
+int buf_len = 0;
+
 #if 0
 //float pcm_buf[WIN_LENGTH];
 uint16_t pdmRxBuf[128];
@@ -163,6 +168,7 @@ uint8_t fifo_read_enabled = 0;
 #endif
 
 uint8_t display_words_enabled = 0;
+uint8_t print_words = 1;
 enum leds_status led_status = Off;
 
 #if 0
@@ -277,12 +283,66 @@ void recognize_commands(const char *word) {
 		led_status = Off;
 
 		if (strcmp(word, ON) == 0) {
-			// enable the display of the words
+			print_words = 0;
+			if (!display_words_enabled) {	// We need to enable words display
+				buf_len = sprintf(b, "Now the words will be displayed\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+			} else {		// Words display is already enabled
+				buf_len = sprintf(b, "Words display is already enabled\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+			}
+
+			// enable words display
 			display_words_enabled = 1;
 		} else if (strcmp(word, OFF) == 0) {
 			// disable the display of the words
-			if (display_words_enabled)
+			if (display_words_enabled) {
 				display_words_enabled = 0;
+
+				buf_len = sprintf(b,
+						"Now the words will not be displayed anymore\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+			}
+		} else if (strcmp(word, VISUAL) == 0) {
+			print_words = 0;
+
+			for (uint8_t i = 0; i < ELAPSED_TIME_MAX_SECTIONS; i++) {
+				switch (i) {
+				case 0:
+					buf_len = sprintf(b, "Audio acquisition execution time:\r\n");
+					break;
+				case 1:
+					buf_len = sprintf(b, "MFCCs extraction execution time:\r\n");
+					break;
+				case 2:
+					buf_len = sprintf(b, "Inference execution time:\r\n");
+					break;
+				default:
+					break;
+					// unreachable
+				}
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+
+				buf_len = sprintf(b, "\telapsed=%lu\r\n",
+									elapsed_time_tbl[i].current);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+
+				buf_len = sprintf(b, "\tmax=%lu\r\n", elapsed_time_tbl[i].max);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+
+				buf_len = sprintf(b, "\tmin=%lu\r\n", elapsed_time_tbl[i].min);
+				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+			}
+		} else if (strcmp(word, STOP) == 0) {
+
+			print_words = 0;
+
+			buf_len = sprintf(b,"Execution times are now reset\r\n");
+			HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+
+			for (uint8_t i = 0; i < ELAPSED_TIME_MAX_SECTIONS; i++) {
+				elapsed_time_clr(i);
+			}
 		}
 	}
 }
@@ -295,42 +355,40 @@ void recognize_commands(const char *word) {
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
-	//float32_t pOutMfcc[NUM_MFCC * num_frames];
-	char b[50];
-	int buf_len = 0;
+//float32_t pOutMfcc[NUM_MFCC * num_frames];
 	ai_error ai_err;
 	ai_i32 nbatch;
 
 	/* Input test for the FFT */
 
-	//extern int16_t testInput_i16_16khz[16000];
-	//extern test_input_mfcc[448];
-	// Chunk of memory used to hold intermediate values for neural network
+//extern int16_t testInput_i16_16khz[16000];
+//extern test_input_mfcc[448];
+// Chunk of memory used to hold intermediate values for neural network
 	AI_ALIGNED(4) ai_u8 activations[AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS_SIZE];
-	//AI_ALIGNED(4): specify a minimum alignment measured in bytes
+//AI_ALIGNED(4): specify a minimum alignment measured in bytes
 
-	// Buffers used to store input and output tensors
+// Buffers used to store input and output tensors
 	AI_ALIGNED(4) ai_float in_data[AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE_BYTES];
 	AI_ALIGNED(4) ai_float out_data[AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE_BYTES];
 
-	// Pointer to our model
+// Pointer to our model
 	ai_handle speech_commands_model = AI_HANDLE_NULL;
 
-	// Initialize wrapper structs that hold pointers to data and info about the
-	// data (tensor height, width, channels)
+// Initialize wrapper structs that hold pointers to data and info about the
+// data (tensor height, width, channels)
 	ai_buffer ai_input[AI_SPEECH_COMMANDS_MODEL_IN_NUM] =
 	AI_SPEECH_COMMANDS_MODEL_IN;
 	ai_buffer ai_output[AI_SPEECH_COMMANDS_MODEL_OUT_NUM] =
 	AI_SPEECH_COMMANDS_MODEL_OUT;
 
-	// Set working memory and get weights/biases from model
+// Set working memory and get weights/biases from model
 	ai_network_params ai_params =
 					AI_NETWORK_PARAMS_INIT(
 							AI_SPEECH_COMMANDS_MODEL_DATA_WEIGHTS(ai_speech_commands_model_data_weights_get()),
 							AI_SPEECH_COMMANDS_MODEL_DATA_ACTIVATIONS(activations)
 					);
 
-	// Set pointers wrapper structs to our data buffers
+// Set pointers wrapper structs to our data buffers
 	ai_input[0].n_batches = 1;
 	ai_input[0].data = AI_HANDLE_PTR(in_data);
 	ai_output[0].n_batches = 1;
@@ -345,13 +403,15 @@ int main(void) {
 
 	/* USER CODE BEGIN Init */
 
-	// Initialize leds
+// Initialize leds
 	BSP_LED_Init(LED3);
 	BSP_LED_Init(LED4);
 	BSP_LED_Init(LED5);
 	BSP_LED_Init(LED6);
 
 	Preprocessing_Init();
+
+	elapsed_time_init();
 
 	/* USER CODE END Init */
 
@@ -360,7 +420,7 @@ int main(void) {
 
 	/* USER CODE BEGIN SysInit */
 
-	// Initialize button
+// Initialize button
 	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
 
 	/* USER CODE END SysInit */
@@ -380,7 +440,7 @@ int main(void) {
 	HAL_I2S_Receive_DMA(&hi2s2, &pdmRxBuf[0], 64);
 #endif
 
-	// Create instance of neural network
+// Create instance of neural network
 	ai_err = ai_speech_commands_model_create(&speech_commands_model,
 	AI_SPEECH_COMMANDS_MODEL_DATA_CONFIG);
 	if (ai_err.type != AI_ERROR_NONE) {
@@ -390,7 +450,7 @@ int main(void) {
 			;
 	}
 
-	// Initialize neural network
+// Initialize neural network
 	if (!ai_speech_commands_model_init(speech_commands_model, &ai_params)) {
 		buf_len = sprintf(b, "Error: could not initialize NN\r\n");
 		HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
@@ -401,11 +461,14 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	//uint8_t printed = 0;
+//uint8_t printed = 0;
 	while (1) {
 		while (button_pressed) {
 			button_pressed = 0;
+
+			elapsed_time_start(0);
 			AudioRecord_Test();
+			elapsed_time_stop(0);
 
 			/* Turn ON LED6: transmit recorded audio */
 			//BSP_LED_On(LED6);
@@ -433,9 +496,11 @@ int main(void) {
 //						HAL_UART_Transmit(&huart2, (uint8_t*) b, l,
 //						HAL_MAX_DELAY);
 //					}
+			elapsed_time_start(1);
 			AudioPreprocessing_Run((int16_t*) &WrBuffer[0],
 					(ai_float*) &in_data[0],
 					WR_BUFFER_SIZE);
+			elapsed_time_stop(1);
 
 			/*for (int i = 0; i < AI_SPEECH_COMMANDS_MODEL_IN_1_SIZE; i++) {
 			 int l = sprintf(b, "%e\r\n", in_data[i]);
@@ -445,8 +510,11 @@ int main(void) {
 
 			//BSP_LED_Off(LED6);
 			// Perform inference
+			elapsed_time_start(2);
 			nbatch = ai_speech_commands_model_run(speech_commands_model,
 					&ai_input[0], &ai_output[0]);
+			elapsed_time_stop(2);
+
 			if (nbatch != 1) {
 				buf_len = sprintf(b, "Error: could not run inference\r\n");
 				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
@@ -456,18 +524,21 @@ int main(void) {
 
 			char *word = get_word(idx);
 
+			print_words = 1;
+
 			recognize_commands(word);
 			//display_words_enabled = 1; // to remove
 
 			if (display_words_enabled) {
+				// Do not print ON, since `recognize_commands` prints special messages for it
+				if (print_words) {
+					// Print output of neural network
 
-				// Print output of neural network
-				buf_len = sprintf(b, "%d %s\r\n", idx, word);
-				HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
-
-				// Wait before doing it again
-				HAL_Delay(500);
+					buf_len = sprintf(b, "%d %s\r\n", idx, word);
+					HAL_UART_Transmit(&huart2, (uint8_t*) b, buf_len, 100);
+				}
 			}
+
 		}
 		/*for (int i = 0; i < (NUM_MFCC * num_frames); i++) {
 		 int l = sprintf(b, "%e\r\n", pOutMfcc[i]);
