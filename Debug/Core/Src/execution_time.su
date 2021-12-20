@@ -1,0 +1,4 @@
+execution_time.c:42:6:execution_time_init	16	static
+execution_time.c:64:6:execution_time_start	16	static
+execution_time.c:78:6:execution_time_stop	24	static
+execution_time.c:103:6:execution_time_clear	24	static

@@ -753,11 +753,11 @@ uint8_t BSP_AUDIO_IN_SetVolume(uint8_t Volume) {
  */
 uint8_t BSP_AUDIO_IN_PDMToPCM(uint16_t *PDMBuf, uint16_t *PCMBuf) {
 	// INTERNAL_BUFF_SIZE / 2 = 128 / 2 = 64
-	uint16_t AppPDM[INTERNAL_BUFF_SIZE / 2];
+	uint16_t AppPDM[PDM_BUFFER_SIZE / 2];
 	uint32_t index = 0;
 
 	/* PDM Demux */
-	for (index = 0; index < INTERNAL_BUFF_SIZE / 2; index++) {
+	for (index = 0; index < PDM_BUFFER_SIZE / 2; index++) {
 		AppPDM[index] = HTONS(PDMBuf[index]);
 	}
 

@@ -7,35 +7,32 @@
 C_SRCS += \
 ../Core/Src/audio_record.c \
 ../Core/Src/commands.c \
-../Core/Src/elapsed_time.c \
+../Core/Src/execution_time.c \
 ../Core/Src/main.c \
 ../Core/Src/stm32f4xx_hal_msp.c \
 ../Core/Src/stm32f4xx_it.c \
 ../Core/Src/sysmem.c \
-../Core/Src/system_stm32f4xx.c \
-../Core/Src/test_input.c 
+../Core/Src/system_stm32f4xx.c 
 
 OBJS += \
 ./Core/Src/audio_record.o \
 ./Core/Src/commands.o \
-./Core/Src/elapsed_time.o \
+./Core/Src/execution_time.o \
 ./Core/Src/main.o \
 ./Core/Src/stm32f4xx_hal_msp.o \
 ./Core/Src/stm32f4xx_it.o \
 ./Core/Src/sysmem.o \
-./Core/Src/system_stm32f4xx.o \
-./Core/Src/test_input.o 
+./Core/Src/system_stm32f4xx.o 
 
 C_DEPS += \
 ./Core/Src/audio_record.d \
 ./Core/Src/commands.d \
-./Core/Src/elapsed_time.d \
+./Core/Src/execution_time.d \
 ./Core/Src/main.d \
 ./Core/Src/stm32f4xx_hal_msp.d \
 ./Core/Src/stm32f4xx_it.d \
 ./Core/Src/sysmem.d \
-./Core/Src/system_stm32f4xx.d \
-./Core/Src/test_input.d 
+./Core/Src/system_stm32f4xx.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -1,16 +1,16 @@
 Neural Network Tools for STM32AI v1.5.1 (STM.ai v7.0.0-RC8)
-Created date          : 2021-12-19 16:40:01
-Parameters            : generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace2101099304807915282934069393874589 --output /home/federica/.stm32cubemx
+Created date          : 2021-12-20 11:07:13
+Parameters            : generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace3956840373872580536927216293931 --output /home/federica/.stm32cubemx
 
 Exec/report summary (generate)
 ------------------------------------------------------------------------------------------------------------------------
-model file            : /home/federica/Scrivania/Uni/PROS/original-speech-commands-model.tflite
+model file            : /home/federica/Scrivania/Uni/PROS/speech-commands-model.tflite
 type                  : tflite
 c_name                : speech_commands_model
-workspace dir         : /tmp/mxAI_workspace2101099304807915282934069393874589
+workspace dir         : /tmp/mxAI_workspace3956840373872580536927216293931
 output dir            : /home/federica/.stm32cubemx
 
-model_name            : originalspeechcommandsmodel
+model_name            : speechcommandsmodel
 model_hash            : 41462d249594b57ba755e9ef6047e629
 input                 : serving_default_conv2d_21_input0 [448 items, 1.75 KiB, ai_float, float, (1, 16, 28, 1)]
 inputs (total)        : 1.75 KiB
@@ -22,7 +22,7 @@ weights (ro)          : 176,888 B (172.74 KiB) / +130,176(+278.7%) vs original m
 activations (rw)      : 13,600 B (13.28 KiB) 
 ram (total)           : 15,544 B (15.18 KiB) = 13,600 + 1,792 + 152
 
-Model name - originalspeechcommandsmodel ['serving_default_conv2d_21_input0'] ['nl_7']
+Model name - speechcommandsmodel ['serving_default_conv2d_21_input0'] ['nl_7']
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 id   layer (type)                               oshape              param/size      macc      connected to                       |   c_size              c_macc            c_type               
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ model/c-model: macc=243,888/243,888  weights=46,712/176,888 +130,176(+278.7%) ac
 
 Generated C-graph summary
 ------------------------------------------------------------------------------------------------------------------------
-model name            : originalspeechcommandsmodel
+model name            : speechcommandsmodel
 c-name                : speech_commands_model
 c-node #              : 8
 c-array #             : 20

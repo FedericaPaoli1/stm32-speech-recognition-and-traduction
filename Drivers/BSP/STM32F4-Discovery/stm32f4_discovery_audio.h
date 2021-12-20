@@ -157,7 +157,7 @@
 #define DEFAULT_AUDIO_IN_VOLUME               64
 
 /* PDM buffer input size */
-#define INTERNAL_BUFF_SIZE                    128*DEFAULT_AUDIO_IN_FREQ/16000*DEFAULT_AUDIO_IN_CHANNEL_NBR
+#define PDM_BUFFER_SIZE                    128*DEFAULT_AUDIO_IN_FREQ/16000*DEFAULT_AUDIO_IN_CHANNEL_NBR
 /* PCM buffer output size */
 #define PCM_OUT_SIZE                          DEFAULT_AUDIO_IN_FREQ/1000
 #define CHANNEL_DEMUX_MASK                    0x55

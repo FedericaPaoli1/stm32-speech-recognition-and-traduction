@@ -1,39 +1,34 @@
 /**
-  ******************************************************************************
-  * @file    BSP/Inc/audio_record.h 
-  * @author  MCD Application Team
-  * @brief   Header for audio_record.c module
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ *******************************************************************************
+ * @file           : audio_record.h
+ * @brief          : Header for audio_record.c file.
+ *					 This file contains the defines to manage audio acquisition.
+ * @author		   : Federica Paoli'
+ * @author		   : Stefano Taverni
+ * @date	       : 2022-1
+ *******************************************************************************
+ */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __AUDIO_RECORD_H
-#define __AUDIO_RECORD_H
+#ifndef INC_AUDIO_RECORD_H_
+#define INC_AUDIO_RECORD_H_
 
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h"
 
-/* Exported types ------------------------------------------------------------*/
-extern uint16_t WrBuffer[WR_BUFFER_SIZE];
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
-void AudioRecord_Test(void);
-void AudioRecorderProcessingAudioBuffer(void);
+/* Typedefs ------------------------------------------------------------------*/
 
-#endif /* __AUDIO_RECORD_H */
+typedef enum {
+	OFFSET_NONE = 0, OFFSET_HALF, OFFSET_FULL,
+} DMA_Buffer_State;
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/* Variables -----------------------------------------------------------------*/
+
+extern uint16_t pcm_buffer[PCM_BUFFER_SIZE];
+
+/* Functions -----------------------------------------------------------------*/
+
+void audio_record(void);
+
+#endif /* INC_AUDIO_RECORD_H_ */

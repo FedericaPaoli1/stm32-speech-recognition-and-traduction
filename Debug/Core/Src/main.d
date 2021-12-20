@@ -1,5 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/execution_time.h \
+ ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
@@ -44,11 +44,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/../../Drivers/BSP/STM32F4-Discovery/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h \
  ../PDM2PCM/App/pdm2pcm.h \
  ../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h \
- ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
- ../Middlewares/ST/AI/Inc/ai_platform.h \
- ../X-CUBE-AI/App/speech_commands_model.h \
- ../X-CUBE-AI/App/speech_commands_model_config.h \
- ../X-CUBE-AI/App/speech_commands_model_data.h ../Core/Inc/commands.h \
+ ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h \
+ ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h \
  /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/CMSIS/DSP/Include/arm_math.h \
  /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/CMSIS/DSP/Include/arm_math_types.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h \
@@ -84,11 +81,15 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/STM32_AI_AudioPreprocessing_Library/Inc/dct.h \
  /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/STM32_AI_AudioPreprocessing_Library/Inc/mel_filterbank.h \
  /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/STM32_AI_AudioPreprocessing_Library/Inc/window.h \
- ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h \
- ../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h \
+ ../Core/Inc/commands.h ../Middlewares/ST/AI/Inc/ai_platform.h \
  ../Core/Inc/audio_record.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h \
- ../Core/Inc/elapsed_time.h
+ ../Middlewares/ST/AI/Inc/ai_datatypes_defines.h \
+ ../X-CUBE-AI/App/speech_commands_model.h \
+ ../X-CUBE-AI/App/speech_commands_model_config.h \
+ ../X-CUBE-AI/App/speech_commands_model_data.h
+
+../Core/Inc/execution_time.h:
 
 ../Core/Inc/main.h:
 
@@ -182,17 +183,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h:
 
-../Middlewares/ST/AI/Inc/ai_datatypes_defines.h:
+../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h:
 
-../Middlewares/ST/AI/Inc/ai_platform.h:
-
-../X-CUBE-AI/App/speech_commands_model.h:
-
-../X-CUBE-AI/App/speech_commands_model_config.h:
-
-../X-CUBE-AI/App/speech_commands_model_data.h:
-
-../Core/Inc/commands.h:
+../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h:
 
 /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/CMSIS/DSP/Include/arm_math.h:
 
@@ -264,9 +257,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 /home/federica/Scrivania/Uni/PROS/Progetto/SpeechRecognitionAndTraduction/Drivers/STM32_AI_AudioPreprocessing_Library/Inc/window.h:
 
-../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery.h:
+../Core/Inc/commands.h:
 
-../Core/Src/../../Drivers/BSP/STM32F4-Discovery/stm32f4_discovery_audio.h:
+../Middlewares/ST/AI/Inc/ai_platform.h:
 
 ../Core/Inc/audio_record.h:
 
@@ -274,4 +267,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h:
 
-../Core/Inc/elapsed_time.h:
+../Middlewares/ST/AI/Inc/ai_datatypes_defines.h:
+
+../X-CUBE-AI/App/speech_commands_model.h:
+
+../X-CUBE-AI/App/speech_commands_model_config.h:
+
+../X-CUBE-AI/App/speech_commands_model_data.h:

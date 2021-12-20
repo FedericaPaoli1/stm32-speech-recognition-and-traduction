@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    speech_commands_model_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    Sun Dec 19 16:40:01 2021
+  * @date    Mon Dec 20 11:07:12 2021
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention

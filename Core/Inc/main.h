@@ -4,6 +4,9 @@
   * @file           : main.h
   * @brief          : Header for main.c file.
   *                   This file contains the common defines of the application.
+  * @author		   : Federica Paoli'
+  * @author		   : Stefano Taverni
+  * @date	       : 2022-1
   ******************************************************************************
   * @attention
   *
@@ -51,11 +54,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 /* Size of the recorder buffer (Multiple of 4096, RAM_BUFFER_SIZE used in BSP) */
-#define WR_BUFFER_SIZE       0x3ff0 //16368 // 0x7fe0 32736  // 0x7000  28_672
-
-#define PAUSE_STATUS     ((uint32_t)0x00) /* Audio Player in Pause Status */
-#define RESUME_STATUS    ((uint32_t)0x01) /* Audio Player in Resume Status */
-#define IDLE_STATUS      ((uint32_t)0x02) /* Audio Player in Idle Status */
+#define PCM_BUFFER_SIZE       0x3ff0 // 16368
 
 /* USER CODE END EM */
 
