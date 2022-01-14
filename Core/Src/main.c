@@ -181,10 +181,10 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* Initialize audio processing structures */
-void Preprocessing_Init(void);
+void preprocessing_init(void);
 
 /* MCU sleep mode */
-void SleepMode(void);
+void stop_mode(void);
 
 /* USER CODE END PFP */
 
@@ -257,7 +257,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
 			led_status = Green;
 		}
-	/* Turn on blue led and turn off the others */
+		/* Turn on blue led and turn off the others */
 	} else if (strcmp(word, TWO) == 0) {
 		if (led_status != Blue) {
 			if (led_status == Green) {
@@ -270,7 +270,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD6_Pin);
 			led_status = Blue;
 		}
-	/* Turn on red led and turn off the others */
+		/* Turn on red led and turn off the others */
 	} else if (strcmp(word, THREE) == 0) {
 		if (led_status != Red) {
 			if (led_status == Green) {
@@ -283,7 +283,7 @@ void recognize_commands(const char *word) {
 			HAL_GPIO_TogglePin(GPIOD, LD5_Pin);
 			led_status = Red;
 		}
-	/* Turn on orange led and turn off the others */
+		/* Turn on orange led and turn off the others */
 	} else if (strcmp(word, FOUR) == 0) {
 		if (led_status != Orange) {
 			if (led_status == Green) {
@@ -320,16 +320,16 @@ void recognize_commands(const char *word) {
 						"Now the words will be displayed\r\n");
 				HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
 						usart_buffer_length, 100);
-			/* `display_words_enabled` is already enabled */
+				/* `display_words_enabled` is already enabled */
 			} else {
 				usart_buffer_length = sprintf(usart_buffer,
 						"Words display is already enabled\r\n");
 				HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
 						usart_buffer_length, 100);
 			}
-			
+
 			display_words_enabled = 1;
-		/* Disable `display_words_enabled` */
+			/* Disable `display_words_enabled` */
 		} else if (strcmp(word, OFF) == 0) {
 			if (display_words_enabled) {
 				display_words_enabled = 0;
@@ -339,7 +339,7 @@ void recognize_commands(const char *word) {
 				HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
 						usart_buffer_length, 100);
 			}
-		/* Show execution time statistics */
+			/* Show execution time statistics */
 		} else if (strcmp(word, VISUAL) == 0) {
 			print_words = 0;
 
@@ -379,7 +379,7 @@ void recognize_commands(const char *word) {
 				HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
 						usart_buffer_length, 100);
 			}
-		/* Reset execution time statistics */
+			/* Reset execution time statistics */
 		} else if (strcmp(word, STOP) == 0) {
 
 			print_words = 0;
@@ -452,7 +452,7 @@ int main(void) {
 	BSP_LED_Init(LED5);
 	BSP_LED_Init(LED6);
 
-	Preprocessing_Init();
+	preprocessing_init();
 
 	execution_time_init();
 
@@ -506,7 +506,7 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		SleepMode();
+		stop_mode();
 
 		execution_time_start(0);
 		/* Acquire audio signal and transform it to PCM data */
@@ -525,29 +525,29 @@ int main(void) {
 				&ai_input[0], &ai_output[0]);
 		execution_time_stop(2);
 
+
 		if (nbatch != 1) {
 			usart_buffer_length = sprintf(usart_buffer,
 					"Error: could not run inference\r\n");
 			HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
 					usart_buffer_length, 100);
-		}
-		
-		/* Get the predicted word */
-		uint8_t idx = argmax(out_data, AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE);
-		char *word = get_word(idx);
+		} else {
+			/* Get the predicted word */
+			uint8_t idx = argmax(out_data, AI_SPEECH_COMMANDS_MODEL_OUT_1_SIZE);
+			char *word = get_word(idx);
 
-		print_words = 1;
+			print_words = 1;
 
-		recognize_commands(word);
+			recognize_commands(word);
 
-		if (display_words_enabled) {
-			/* Print words for commands different from `ON`, `VISUAL` and `STOP` */
-			if (print_words) {
-				/* Print the neural network output */
-				usart_buffer_length = sprintf(usart_buffer, "%d %s\r\n", idx,
-						word);
-				HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
-						usart_buffer_length, 100);
+			if (display_words_enabled) {
+				/* Print words for commands different from `ON`, `VISUAL` and `STOP` */
+				if (print_words) {
+					/* Print the neural network output */
+					usart_buffer_length = sprintf(usart_buffer, "%s\r\n", word);
+					HAL_UART_Transmit(&huart2, (uint8_t*) usart_buffer,
+							usart_buffer_length, 100);
+				}
 			}
 		}
 	}
@@ -818,7 +818,7 @@ static void MX_GPIO_Init(void) {
  *
  * @retval None
  */
-void Preprocessing_Init(void) {
+void preprocessing_init(void) {
 	/* Init window function */
 	if (Window_Init(window_func_buffer, FRAME_LEN, WINDOW_HANN) != 0) {
 		while (1)
@@ -879,12 +879,12 @@ void Preprocessing_Init(void) {
 	/* Init MFCC */
 	mfcc.LogMelConf = &log_mel_spectrogram;
 	mfcc.pDCT = &dct;
-	mfcc.NumMfccCoefs = NUM_MFCC; 
+	mfcc.NumMfccCoefs = NUM_MFCC;
 	mfcc.pScratch = mfcc_scratch_buffer;
 }
 
 /**
- * @brief Put the MCU into WFI SLEEP MODE.
+ * @brief Put the MCU into WFI STOP MODE.
  *   This function suspends all the peripherals and the USART, except the GPIO 
  *   ones.
  *
@@ -892,7 +892,7 @@ void Preprocessing_Init(void) {
  *
  * @retval None
  */
-void SleepMode(void) {
+void stop_mode(void) {
 	HAL_UART_DeInit(&huart2);
 
 	/* Suspend Tick increment to prevent wakeup by Systick interrupt, 
@@ -901,8 +901,8 @@ void SleepMode(void) {
 	 */
 	HAL_SuspendTick();
 
-	/* Request to enter SLEEP mode */
-	HAL_PWR_EnterSLEEPMode(0, PWR_SLEEPENTRY_WFI);
+	/* Request to enter STOP mode */
+	HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 
 	/* Resume Tick interrupt if disabled prior to sleep mode entry*/
 	HAL_ResumeTick();

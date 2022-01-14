@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "generate --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace3956840373872580536927216293931 --output /home/federica/.stm32cubemx",
+    "cli_parameters": "analyze --name speech_commands_model -m /home/federica/Scrivania/Uni/PROS/speech-commands-model.tflite --type tflite --compression 1 --verbosity 1 --workspace /tmp/mxAI_workspace325348182400289960350485384588865 --output /home/federica/.stm32cubemx",
     "cli_version": {
         "major": 1,
         "micro": 1,
@@ -12,10 +12,10 @@
         "factor": null,
         "layers": {}
     },
-    "date_time": "Mon Dec 20 11:07:12 2021",
+    "date_time": "Wed Jan 12 18:55:05 2022",
     "error": 0,
     "error_str": [],
-    "exec_cmd": "generate",
+    "exec_cmd": "analyze",
     "exec_duration": 0.0,
     "hash": "41462d249594b57ba755e9ef6047e629",
     "inputs": [

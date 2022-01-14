@@ -767,14 +767,8 @@ uint8_t BSP_AUDIO_IN_PDMToPCM(uint16_t *PDMBuf, uint16_t *PCMBuf) {
 				&PDM_FilterHandler[index]);
 	}
 	/* Duplicate samples since a single microphone in mounted on STM32F4-Discovery */
-	// PCM_OUT_SIZE = 16
 	/*for (index = 0; index < PCM_OUT_SIZE; index++) {
 		PCMBuf[(index << 1) + 1] = PCMBuf[index << 1];
-		// input tracing:
-		//  index = 0 -> index << 1 = 0
-		//  index = 1 -> index << 1 = 2
-		//  index = 2 -> index << 1 = 4
-		//  index = 3 -> index << 1 = 6
 	}*/
 
 	/* Return AUDIO_OK when all operations are correctly done */
