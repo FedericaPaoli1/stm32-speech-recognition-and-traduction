@@ -5,9 +5,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  
+
   <h3 align="center">stm32-speech-recognition-and-traduction</h3>
-  
+
 </p>
 
 <!-- TABLE OF CONTENTS -->
@@ -39,9 +39,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-stm32-speech-recognition-and-traduction is a project developed for the Operating Systems Design exam at the University of Milan (academic year 2020-2021). 
-It implements a speech recognition and speech-to-text translation system using a pre-trained machine learning model. 
-The system is able to distinguish a restricted set of words to limit the complexity of the final model so that it can be run on the stm32f407vg microcontroller 
+stm32-speech-recognition-and-traduction is a project developed for the Operating Systems Design exam at the University of Milan (academic year 2020-2021).
+It implements a speech recognition and speech-to-text translation system using a pre-trained machine learning model.
+The system is able to distinguish a restricted set of words to limit the complexity of the final model so that it can be run on the stm32f407vg microcontroller
 where memory and calculation capacity are limited. In particular, the voice recognition system distinguishes simple commands such as switching the LEDs on and off
 and enabling the translation system. The latter, on the other hand, processes the voice signal by converting it into text, which is then displayed on the screen.
 
@@ -60,11 +60,15 @@ and enabling the translation system. The latter, on the other hand, processes th
 <!-- GETTING STARTED -->
 ## Getting Started
 
+## Required libraries
+
+To correctly build this project, you'll need the [X-CUBE AI](https://www.st.com/en/embedded-software/x-cube-ai.html) and [PDM2PCM](https://www.st.com/resource/en/user_manual/um2372-stm32cube-pdm2pcm-software-library-for-the-stm32f4f7h7-series-stmicroelectronics.pdf) ST libraries. You can download them directly from ST official website and install in the root level of this project.
+
 ### Prerequisites
 
 * STM32F407VG board, equipped with both UART/USART interface and ST-MEMS digital microphone
 * USART-USB dongle to connect the pins of the UART/USART interface to a PC via USB
-   
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 To enable the microphone mounted on the microcontroller to acquire a new word, the user B1 button must be pressed. Once this is done, a one-second audio signal is acquired. Depending on the word spoken, different actions are performed.
