@@ -60,7 +60,7 @@ and enabling the translation system. The latter, on the other hand, processes th
 <!-- GETTING STARTED -->
 ## Getting Started
 
-## Required libraries
+### Required libraries
 
 To correctly build this project, you'll need the [X-CUBE AI](https://www.st.com/en/embedded-software/x-cube-ai.html) and [PDM2PCM](https://www.st.com/resource/en/user_manual/um2372-stm32cube-pdm2pcm-software-library-for-the-stm32f4f7h7-series-stmicroelectronics.pdf) ST libraries. You can download them directly from ST official website and install in the root level of this project.
 
